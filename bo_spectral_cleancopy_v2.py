@@ -507,9 +507,12 @@ def BO_vartarget(X, fix_params, num_start, N):
 
     return  X_opt, X_opt_GP, var_params, explored_data, final_GP_estim
 
+st.title('Bayesian Optimization for Variable target')
+st.subheader('by Arpan Biswas, Rama Vasudevan')
+
 """#Load data for analysis - BEPFM data"""
 
-!pip install -U gdown
+#!pip install -U gdown
 #!gdown "https://drive.google.com/uc?id=1Rysso5x9Mnhwddt48txKJ9400q5XoAtl"
 !gdown "https://drive.google.com/uc?id=1PoklVNuIwhAMbig0LvxW-zAK82et_aL-"
 !gdown "https://drive.google.com/uc?id=11v5wHmMT0xYcxAYejjxLKz1QARST_JRn"
@@ -596,7 +599,7 @@ plt.show()
 
 """# Lets try with a different data- IV data"""
 
-!pip install -U gdown
+#!pip install -U gdown
 !gdown "https://drive.google.com/uc?id=1l9-i36puXUcGXQMGSgVjci_x-aNC4bzp"
 !gdown "https://drive.google.com/uc?id=1-YMtG0kjypcmVvJDJwaJ1QUf5Ar32uj-"
 
