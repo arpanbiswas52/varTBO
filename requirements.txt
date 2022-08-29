@@ -1,0 +1,7 @@
+torch
+torchvision
+numpy
+matplotlib
+gpytorch
+botorch
+smt
