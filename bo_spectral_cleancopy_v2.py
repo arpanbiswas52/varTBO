@@ -514,9 +514,9 @@ st.subheader('by Arpan Biswas, Rama Vasudevan')
 
 #!pip install -U gdown
 #!gdown "https://drive.google.com/uc?id=1Rysso5x9Mnhwddt48txKJ9400q5XoAtl"
-!gdown "https://drive.google.com/uc?id=1PoklVNuIwhAMbig0LvxW-zAK82et_aL-"
-!gdown "https://drive.google.com/uc?id=11v5wHmMT0xYcxAYejjxLKz1QARST_JRn"
-!gdown "https://drive.google.com/uc?id=1jQZIW7uiNV0J-mDl1yNylhNA6rRFnMM4"
+#!gdown "https://drive.google.com/uc?id=1PoklVNuIwhAMbig0LvxW-zAK82et_aL-"
+#!gdown "https://drive.google.com/uc?id=11v5wHmMT0xYcxAYejjxLKz1QARST_JRn"
+#!gdown "https://drive.google.com/uc?id=1jQZIW7uiNV0J-mDl1yNylhNA6rRFnMM4"
 
 
 #boptim_results = np.load("boptim_results.npy", allow_pickle=True)
@@ -600,8 +600,8 @@ plt.show()
 """# Lets try with a different data- IV data"""
 
 #!pip install -U gdown
-!gdown "https://drive.google.com/uc?id=1l9-i36puXUcGXQMGSgVjci_x-aNC4bzp"
-!gdown "https://drive.google.com/uc?id=1-YMtG0kjypcmVvJDJwaJ1QUf5Ar32uj-"
+#!gdown "https://drive.google.com/uc?id=1l9-i36puXUcGXQMGSgVjci_x-aNC4bzp"
+#!gdown "https://drive.google.com/uc?id=1-YMtG0kjypcmVvJDJwaJ1QUf5Ar32uj-"
 
 iv_dat = np.load("cur_mat_raw.npy")
 iv_dat = iv_dat
