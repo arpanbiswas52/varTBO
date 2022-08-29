@@ -22,17 +22,9 @@ Build a BO framework-
 - The goal is to build a optimization (BO) model where we adaptively sample towards region (in image) of good spectral, and find optimal location point closest to the current chosen target spectral (as per user voting).
 
 Install packages
+
+Import library
 """
-
-#@title
-#!pip install atomai
-#!pip install -q pyroved kornia
-!pip install botorch #version 0.5.1
-!pip install gpytorch #version 1.6.0
-!pip install smt
-!pip install streamlit
-
-"""Import library"""
 
 #@title 
 import torch
