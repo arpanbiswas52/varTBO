@@ -7,7 +7,7 @@ Original file is located at
     https://colab.research.google.com/drive/1mCPhG0nAYTYW8cLPWuctwHdz39vbsufM
 """
 
-#pip install torch torchvision
+pipenv install torch torchvision
 #pip install botorch #version 0.5.1
 #pip install gpytorch #version 1.6.0
 #pip install smt
