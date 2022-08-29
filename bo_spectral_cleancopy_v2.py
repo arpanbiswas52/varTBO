@@ -55,6 +55,49 @@ def interactive_BO(df):
     num_start = st.sidebar.slider('Starting Samples', 2, 30, 10)
     N = st.sidebar.slider('Total BO samples', 10, 200, 100)
 
+    #Get data
+    loop_mat = df[0]
+    dc_vec = df[1]
+    bepfm_image = df[2]
+
+    n_spectral = 2 # Consider the final loop measurement
+    loop_mat_grid = np.reshape(loop_mat,(60, 60, loop_mat.shape[1], loop_mat.shape[2]))
+    loop = loop_mat_grid[:, :, :, n_spectral] 
+    #print(loop.shape)
+
+    #Tranform the image data to map with spectral data
+    grid_dim = loop.shape[1]
+    bepfm_lowres_image = resize(bepfm_image, (grid_dim, grid_dim))
+    #print(bepfm_lowres_image.shape)
+
+    #Consider single sweep of voltage to generate hysteresis loop
+    l_vsweep= loop.shape[2]
+    V= dc_vec[:l_vsweep]
+    #print(V.shape)
+
+    #Normalize loop data (avoiding drift in data)
+    loop_norm = np.zeros((loop.shape))
+    for i in range(0, loop.shape[0]):
+      for j in range(0, loop.shape[1]):
+        loop_norm[i, j, :] = (loop[i,j,:]- np.mean(loop[i,j,:]))*1e4
+
+    #print(loop.shape, loop_norm.shape)
+
+    #tranform data into torch
+    loop_norm = torch.from_numpy(loop_norm)
+    V = torch.from_numpy(V)
+    bepfm_lowres_image= torch.from_numpy(bepfm_lowres_image)
+
+    #print(loop_norm.shape, bepfm_lowres_image.shape, V.shape)
+    #latent parameters for defining KL trajectories
+    grid_x1 = torch.arange(0, bepfm_lowres_image.shape[0])
+    grid_x2 = torch.arange(0, bepfm_lowres_image.shape[1])
+
+    X= torch.vstack((grid_x1, grid_x2))
+
+    #Fixed parameters of VAE model
+    fix_params = [loop_norm, bepfm_lowres_image, V]
+
 @st.cache
 def load_data():
     loop_mat = np.load("loop_mat.npy")
