@@ -7,7 +7,7 @@ Original file is located at
     https://colab.research.google.com/drive/1mCPhG0nAYTYW8cLPWuctwHdz39vbsufM
 """
 
-pip install torch torchvision
+#pip install torch torchvision
 #pip install botorch #version 0.5.1
 #pip install gpytorch #version 1.6.0
 #pip install smt
@@ -15,7 +15,7 @@ pip install torch torchvision
 
 import streamlit as st
 import numpy as np
-import torch
+#import torch
 
 def main(df):
     st.title('Spectral optimization through BO with adaptive target setting')
@@ -85,16 +85,16 @@ def interactive_BO(df):
     #print(loop.shape, loop_norm.shape)
 
     #tranform data into torch
-    #loop_norm = torch.from_numpy(loop_norm)
-    #V = torch.from_numpy(V)
-    #bepfm_lowres_image= torch.from_numpy(bepfm_lowres_image)
+    loop_norm = torch.from_numpy(loop_norm)
+    V = torch.from_numpy(V)
+    bepfm_lowres_image= torch.from_numpy(bepfm_lowres_image)
 
     #print(loop_norm.shape, bepfm_lowres_image.shape, V.shape)
     #latent parameters for defining KL trajectories
-    #grid_x1 = torch.arange(0, bepfm_lowres_image.shape[0])
-    #grid_x2 = torch.arange(0, bepfm_lowres_image.shape[1])
+    grid_x1 = torch.arange(0, bepfm_lowres_image.shape[0])
+    grid_x2 = torch.arange(0, bepfm_lowres_image.shape[1])
 
-    #X= torch.vstack((grid_x1, grid_x2))
+    X= torch.vstack((grid_x1, grid_x2))
 
     #Fixed parameters of VAE model
     fix_params = [loop_norm, bepfm_lowres_image, V]
