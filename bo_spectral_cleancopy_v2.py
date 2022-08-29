@@ -24,6 +24,7 @@ Build a BO framework-
 Install packages
 """
 
+pip install torch
 pip install botorch #version 0.5.1
 pip install gpytorch #version 1.6.0
 pip install smt
