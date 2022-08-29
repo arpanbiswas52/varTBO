@@ -15,7 +15,7 @@ Original file is located at
 
 import streamlit as st
 import numpy as np
-#import torch
+import torch
 
 def main(df):
     st.title('Spectral optimization through BO with adaptive target setting')
