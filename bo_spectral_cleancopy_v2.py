@@ -35,25 +35,26 @@ def main(df):
     """
     , unsafe_allow_html=True)
 
-    start = st.button('Start_Analysis')
-    if start:
-      interactive_BO(df)
+    Details = st.button('Details')
+    if Details:
+      detail_info()
       st.markdown('---')
       
 
     else:
       st.markdown('---')
-      
+      interactive_BO(df)
+
+def detail_info():
+    st.title('Building the Model')
+
+    st.button('Back to analysis') 
 
 def interactive_BO(df):
-    num_start = st.sidebar.slider(label='Starting Samples', value=[2, 30])
-    N = st.sidebar.slider(label='Total BO samples', value=[10, 200])
+    st.sidebar.markdown('## Initialization')
+    num_start = st.sidebar.slider('Starting Samples', 2, 30, 10)
+    N = st.sidebar.slider('Total BO samples', 10, 200, 100)
 
-st.set_page_config(
-    layout="wide",
-    page_title='BO_spectral',
-    page_icon='BO_spectral_icon.jpeg'
-)
 @st.cache
 def load_data():
     loop_mat = np.load("loop_mat.npy")
