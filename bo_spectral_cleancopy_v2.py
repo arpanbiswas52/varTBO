@@ -38,15 +38,21 @@ def main(df):
     start = st.button('Start_Analysis')
     if start:
       st.markdown('---')
-      interactive_BO(df)
+      
 
     else:
       st.markdown('---')
+      interactive_BO(df)
 
 def interactive_BO(df):
     num_start = st.sidebar.slider(label='Starting Samples', value=[2, 30])
     N = st.sidebar.slider(label='Total BO samples', value=[10, 200])
 
+st.set_page_config(
+    layout="wide",
+    page_title='BO_spectral',
+    page_icon='BO_spectral_icon.jpeg'
+)
 @st.cache
 def load_data():
     loop_mat = np.load("loop_mat.npy")
