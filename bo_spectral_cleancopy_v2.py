@@ -37,12 +37,13 @@ def main(df):
 
     start = st.button('Start_Analysis')
     if start:
+      interactive_BO(df)
       st.markdown('---')
       
 
     else:
       st.markdown('---')
-      interactive_BO(df)
+      
 
 def interactive_BO(df):
     num_start = st.sidebar.slider(label='Starting Samples', value=[2, 30])
