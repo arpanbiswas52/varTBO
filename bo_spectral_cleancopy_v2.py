@@ -16,20 +16,50 @@ Original file is located at
 import streamlit as st
 import numpy as np
 
-st.title('Spectral optimization through BO with adaptive target setting')
-st.subheader('by Arpan Biswas, Rama Vasudevan')
-st.markdown(
-"""
-    
-<br><br/>
-#Problem Description
+def main(df):
+    st.title('Spectral optimization through BO with adaptive target setting')
+    st.subheader('by Arpan Biswas, Rama Vasudevan')
+    st.markdown(
+    """
+        
+    <br><br/>
+    #Problem Description
 
-Build a BO framework-
+    Build a BO framework-
 
-- Here we have a image data, where X is the input location of the image
+    - Here we have a image data, where X is the input location of the image
 
-- Each location in the image, we have a spectral data, from where user select if the data is good/bad (discrete choice). We take the means of all good loops only to generate the target loop.
+    - Each location in the image, we have a spectral data, from where user select if the data is good/bad (discrete choice). We take the means of all good loops only to generate the target loop.
 
-- The goal is to build a optimization (BO) model where we adaptively sample towards region (in image) of good spectral, and find optimal location point closest to the current chosen target spectral (as per user voting). 
-"""
-, unsafe_allow_html=True)
+    - The goal is to build a optimization (BO) model where we adaptively sample towards region (in image) of good spectral, and find optimal location point closest to the current chosen target spectral (as per user voting). 
+    """
+    , unsafe_allow_html=True)
+
+    start = st.button('Start_Analysis')
+    if start:
+      st.markdown('---')
+      interactive_BO(df)
+
+    else:
+      st.markdown('---')
+
+def interactive_BO(df):
+    num_start = st.sidebar.slider(label='Starting Samples', value=[2, 30])
+    N = st.sidebar.slider(label='Total BO samples', value=[10, 200])
+
+@st.cache
+def load_data():
+    loop_mat = np.load("loop_mat.npy")
+    dc_vec = np.load("dc_vec.npy")
+    bepfm_image = np.load("bepfm_image.npy")
+    df = [loop_mat, dc_vec, bepfm_image]
+    return df
+
+
+if __name__ == '__main__':
+
+    logging.basicConfig(level=logging.CRITICAL)
+
+    df = load_data()
+
+    main(df)
