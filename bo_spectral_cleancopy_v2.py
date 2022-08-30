@@ -28,7 +28,7 @@ import random
 #import kornia.metrics as metrics
 from PIL import Image
 from typing import Tuple
-import ipywidgets as widgets
+#import ipywidgets as widgets
 from IPython.display import display
 import pylab as pl
 from IPython.display import clear_output
