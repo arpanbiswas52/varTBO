@@ -31,8 +31,8 @@ from typing import Tuple
 #import ipywidgets as widgets
 #from IPython.display import display
 import pylab as pl
-from IPython.display import clear_output
-import pdb
+#from IPython.display import clear_output
+#import pdb
 from skimage.transform import resize
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 #import gpim
