@@ -36,13 +36,13 @@ import pdb
 from skimage.transform import resize
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 #import gpim
-from sklearn.decomposition import PCA
+#from sklearn.decomposition import PCA
 import matplotlib.gridspec as gridspec
-from copy import deepcopy
+#from copy import deepcopy
 #import pyroved as pv
 #import atomai as aoi
-from typing import Union
-import pickle
+#from typing import Union
+#import pickle
 
 
 # Import GP and BoTorch functions
