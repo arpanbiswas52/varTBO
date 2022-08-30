@@ -65,7 +65,7 @@ from botorch.sampling import IIDNormalSampler
 from botorch.sampling import SobolQMCNormalSampler
 from gpytorch.likelihoods.likelihood import Likelihood
 from gpytorch.constraints import GreaterThan
-from gpytorch.utils.broadcasting import _mul_broadcast_shape
+#from gpytorch.utils.broadcasting import _mul_broadcast_shape
 
 from botorch.generation import get_best_candidates, gen_candidates_torch
 from botorch.optim import gen_batch_initial_conditions
@@ -245,119 +245,6 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func):
     return vote, wcount_good, target_func
 
 
-class SimpleCustomGP(ExactGP, GPyTorchModel):
-    _num_outputs = 1  # to inform GPyTorchModel API
-
-    def __init__(self, train_X, train_Y):
-        # squeeze output dim before passing train_Y to ExactGP
-        super().__init__(train_X, train_Y.squeeze(-1), GaussianLikelihood())
-        self.mean_module = ConstantMean()
-        #self.mean_module = LinearMean(train_X.shape[-1])
-        self.covar_module = ScaleKernel(
-            #base_kernel=MaternKernel(nu=2.5, ard_num_dims=train_X.shape[-1]),
-            base_kernel=RBFKernel(ard_num_dims=train_X.shape[-1]),
-        )
-        self.to(train_X)  # make sure we're on the right device/dtype
-
-    def forward(self, x):
-        mean_x = self.mean_module(x)
-        covar_x = self.covar_module(x)
-        return MultivariateNormal(mean_x, covar_x)
-
-#Optimize Hyperparameters of GP#
-def optimize_hyperparam_trainGP(train_X, train_Y):
-    # Gp model fit
-
-    gp_surro = SimpleCustomGP(train_X, train_Y)
-    gp_surro = gp_surro.double()
-    gp_surro.likelihood.noise_covar.register_constraint("raw_noise", GreaterThan(1e-1))
-    mll1 = ExactMarginalLogLikelihood(gp_surro.likelihood, gp_surro)
-    # fit_gpytorch_model(mll)
-    mll1 = mll1.to(train_X)
-    gp_surro.train()
-    gp_surro.likelihood.train()
-    ## Here we use Adam optimizer with learning rate =0.1, user can change here with different algorithm and/or learning rate for each GP
-    optimizer1 = Adam([{'params': gp_surro.parameters()}], lr=0.1) #0.01 set for BEPFM data, recommended to check the lr for any new data
-    #optimizer1 = SGD([{'params': gp_surro.parameters()}], lr=0.0001)
-
-    NUM_EPOCHS = 150
-
-    for epoch in range(NUM_EPOCHS):
-        # clear gradients
-        optimizer1.zero_grad()
-        # forward pass through the model to obtain the output MultivariateNormal
-        output1 = gp_surro(train_X)
-        # Compute negative marginal log likelihood
-        loss1 = - mll1(output1, gp_surro.train_targets)
-        # back prop gradients
-        loss1.backward(retain_graph=True)
-        # print last iterations
-        if (epoch + 1) > NUM_EPOCHS: #Stopping the print for now
-            print("GP Model trained:")
-            print("Iteration:" + str(epoch + 1))
-            print("Loss:" + str(loss1.item()))
-            # print("Length Scale:" +str(gp_PZO.covar_module.base_kernel.lengthscale.item()))
-            print("noise:" + str(gp_surro.likelihood.noise.item()))
-
-
-        optimizer1.step()
-
-    gp_surro.eval()
-    gp_surro.likelihood.eval()
-    return gp_surro
-
-
-#GP posterior predictions#
-def cal_posterior(gp_surro, test_X):
-    y_pred_means = torch.empty(len(test_X), 1)
-    y_pred_vars = torch.empty(len(test_X), 1)
-    t_X = torch.empty(1, test_X.shape[1])
-    for t in range(0, len(test_X)):
-        with torch.no_grad(), gpt.settings.max_lanczos_quadrature_iterations(32), \
-            gpt.settings.fast_computations(covar_root_decomposition=False, log_prob=False,
-                                                      solves=True), \
-            gpt.settings.max_cg_iterations(100), \
-            gpt.settings.max_preconditioner_size(80), \
-            gpt.settings.num_trace_samples(128):
-
-                t_X[:, 0] = test_X[t, 0]
-                t_X[:, 1] = test_X[t, 1]
-                #t_X = test_X.double()
-                y_pred_surro = gp_surro.posterior(t_X)
-                y_pred_means[t, 0] = y_pred_surro.mean
-                y_pred_vars[t, 0] = y_pred_surro.variance
-
-    return y_pred_means, y_pred_vars
-
-
-#EI acquistion function#
-def acqmanEI(y_means, y_vars, train_Y, ieval):
-
-
-    y_means = y_means.detach().numpy()
-    y_vars = y_vars.detach().numpy()
-    y_std = np.sqrt(y_vars)
-    fmax = train_Y.max()
-    fmax = fmax.detach().numpy()
-    best_value = fmax
-    EI_val = np.zeros(len(y_vars))
-    Z = np.zeros(len(y_vars))
-    eta = 0.01
-    
-    for i in range(0, len(y_std)):
-        if (y_std[i] <=0):
-            EI_val[i] = 0
-        else:
-            Z[i] =  (y_means[i]-best_value-eta)/y_std[i]
-            EI_val[i] = (y_means[i]-best_value-eta)*norm.cdf(Z[i]) + y_std[i]*norm.pdf(Z[i])
-
-    # Eliminate evaluated samples from consideration to avoid repeatation in future sampling
-    EI_val[ieval] = -1
-    acq_val = np.max(EI_val)
-    acq_cand = [k for k, j in enumerate(EI_val) if j == acq_val]
-    #print(acq_val)
-    return acq_cand, acq_val, EI_val
-
 
 # Normalize all data. It is very important to fit GP model with normalized data to avoid issues such as
 # - decrease of GP performance due to largely spaced real-valued data X.
@@ -528,88 +415,10 @@ def BO_vartarget(X, fix_params, num_start, N):
         normalize_get_initialdata_KL(X, fix_params, num, m)
 
 
-    print("Initial evaluation complete. Start BO")
-    ## Gp model fit
-    # Calling function to fit and optimizize Hyperparameter of Gaussian Process (using Adam optimizer)
-    # Input args- Torch arrays of normalized training data, parameter X and objective eval Y
-    # Output args- Gaussian process model lists
-    gp_surro = optimize_hyperparam_trainGP(train_X_norm, train_Y)
-
-    for i in range(1, N + 1):
-        # Calculate posterior for analysis for intermidiate iterations
-        y_pred_means, y_pred_vars = cal_posterior(gp_surro, test_X_norm)
-        if ((i == 1) or ((i % 10) == 0)):
-            # Plotting functions to check the current state exploration and Pareto fronts
-            X_eval, X_GP = plot_iteration_results(train_X, train_Y, test_X, y_pred_means, y_pred_vars, fix_params, i)
-
-        #print(idx)
-        acq_cand, acq_val, EI_val = acqmanEI(y_pred_means, y_pred_vars, train_Y, idx)
-        val = acq_val
-        ind = np.random.choice(acq_cand) # When multiple points have same acq values
-        idx = np.hstack((idx, ind))
+    st.markdown("Initial evaluation complete. Start BO")
 
 
-        ################################################################
-        ## Find next point which maximizes the learning through exploration-exploitation
-        if (i == 1):
-            val_ini = val
-        # Check for convergence
-        if ((val) < 0):  # Stop for negligible expected improvement
-            print("Model converged due to sufficient learning over search space ")
-            break
-        else:
-            nextX = torch.empty((1, len(X)))
-            nextX_norm = torch.empty(1, len(X))
-            nextX[0,:] = test_X[ind, :]
-            nextX_norm [0, :] = test_X_norm[ind, :]
 
-            # Evaluate true function for new data, augment data
-            train_X, train_X_norm, train_Y, var_params, m =\
-             augment_newdata_KL(nextX, nextX_norm, train_X, train_X_norm,train_Y, fix_params, var_params, m)
-
-            # Gp model fit
-            # Updating GP with augmented training data
-            gp_surro = optimize_hyperparam_trainGP(train_X_norm, train_Y)
-
-    ## Final posterior prediction after all the sampling done
-
-    if (i == N):
-        print("Max. sampling reached, model stopped")
-
-    #Optimal GP learning
-    gp_opt = gp_surro
-    # Posterior calculation with converged GP model
-    y_pred_means, y_pred_vars = cal_posterior(gp_opt, test_X_norm)
-    # Plotting functions to check final iteration
-    X_opt, X_opt_GP = plot_iteration_results(train_X, train_Y, test_X, y_pred_means, y_pred_vars, fix_params, i)
-    explored_data = [train_X, train_Y]
-    final_GP_estim = [y_pred_means, y_pred_vars]
-    user_votes = var_params[1]
-    optim_results = [X_opt, X_opt_GP, user_votes, explored_data]
-
-    #Plotting optimal spectral
-
-    #Optimal from estimated GP
-    st.markdown("""
-      - Optimal spectral from estimated GP
-    """)
-    fig, ax = plt.subplots()
-    ax.plot(V, loop_norm[int(X_opt_GP[0, 0]),int(X_opt_GP[0, 1]),:])
-    #plt.show()
-    st.pylot(fig)
-
-    #Optimal from evaluated samples
-    st.markdown("""
-      - Optimal spectral from evaluated samples
-    """)
-    fig, ax = plt.subplots()
-    ax.plot(V, loop_norm[int(X_opt[0, 0]), int(X_opt[0, 1]),:])
-    plt.show(fig)
-    #Save few data
-    np.save("optim_results", optim_results)
-
-
-    return  X_opt, X_opt_GP, var_params, explored_data, final_GP_estim
 
 @st.cache
 def load_data():
