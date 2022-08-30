@@ -128,7 +128,7 @@ def interactive_BO(df):
 
     #Tranform the image data to map with spectral data
     grid_dim = loop.shape[1]
-    bepfm_lowres_image = np.resize(bepfm_image, (grid_dim, grid_dim))
+    bepfm_lowres_image = resize(bepfm_image, (grid_dim, grid_dim))
     #print(bepfm_lowres_image.shape)
 
     #Consider single sweep of voltage to generate hysteresis loop
