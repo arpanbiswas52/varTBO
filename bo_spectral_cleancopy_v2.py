@@ -15,9 +15,67 @@ Original file is located at
 
 import streamlit as st
 import numpy as np
-import matplotlib as mpl
-import matplotlib.pyplot as plt
 import torch
+from torchvision import datasets, transforms
+import matplotlib as mpl
+import numpy as np
+import matplotlib.pyplot as plt
+import pickle
+import numpy as np
+import random
+#import streamlit as st
+#import kornia as K
+#import kornia.metrics as metrics
+from PIL import Image
+from typing import Tuple
+import ipywidgets as widgets
+from IPython.display import display
+import pylab as pl
+from IPython.display import clear_output
+import pdb
+from skimage.transform import resize
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+#import gpim
+from sklearn.decomposition import PCA
+import matplotlib.gridspec as gridspec
+from copy import deepcopy
+#import pyroved as pv
+#import atomai as aoi
+from typing import Union
+import pickle
+
+
+# Import GP and BoTorch functions
+import gpytorch as gpt
+from botorch.models import SingleTaskGP, ModelListGP
+#from botorch.models import gpytorch
+from botorch.fit import fit_gpytorch_model
+from botorch.models.gpytorch import GPyTorchModel
+from botorch.utils import standardize
+from gpytorch.distributions import MultivariateNormal
+from gpytorch.kernels import ScaleKernel, RBFKernel, MaternKernel
+from gpytorch.likelihoods import GaussianLikelihood
+from gpytorch.means import ConstantMean, LinearMean
+from gpytorch.mlls import ExactMarginalLogLikelihood
+from botorch.acquisition import UpperConfidenceBound
+from botorch.optim import optimize_acqf
+from botorch.acquisition import qExpectedImprovement
+from botorch.acquisition import ExpectedImprovement
+from botorch.sampling import IIDNormalSampler
+from botorch.sampling import SobolQMCNormalSampler
+from gpytorch.likelihoods.likelihood import Likelihood
+from gpytorch.constraints import GreaterThan
+
+from botorch.generation import get_best_candidates, gen_candidates_torch
+from botorch.optim import gen_batch_initial_conditions
+
+from gpytorch.models import ExactGP
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from smt.sampling_methods import LHS
+from torch.optim import SGD
+from torch.optim import Adam
+from scipy.stats import norm
+from scipy.interpolate import interp1d
 
 def main(df):
     st.title('Spectral optimization through BO with adaptive target setting')
