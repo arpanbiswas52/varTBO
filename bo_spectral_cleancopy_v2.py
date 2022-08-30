@@ -220,9 +220,9 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func):
         st.pyplot(fig2, clear_figure ="True")
 
 
-    st.sidebar.markdown('Rating: 0-Bad, 1-Good, 2-Very good')
-    #vote = st.sidebar.slider('Rate', 0, 2, 0)
-    vote = st.sidebar.number_input('Rate', min_value=0, max_value=2, value=1)
+    st.markdown('Rating: 0-Bad, 1-Good, 2-Very good')
+    #vote = st.slider('Rate', 0, 2, 0)
+    vote = st.number_input('Rate', min_value=0, max_value=2, value=1)
     st.write('Vote for current spectral', vote)
 
     #print("Rating: 0-Bad, 1-Good, 2-Very good")
@@ -231,14 +231,14 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func):
         newspec_wt = 1
         wcount_good = 1
         if ((wcount_good) > 0): #Only if we already have selected good spectral in early iterations
-            st.sidebar.markdown('Do you want to update preference to new spectral over prioir mean target (Y/N)?')
+            st.markdown('Do you want to update preference to new spectral over prioir mean target (Y/N)?')
             newspec_pref = st.radio("Select",('Yes', 'No'))
             st.write('You selected', newspec_pref)
             #newspec_pref = str(input("Do you want to update preference to new spectral over prioir mean target (Y/N): "))
             if (newspec_pref == 'Yes'):
-                st.sidebar.markdown('Provide weights between 0 and 1: 1 being all the weights to new spectral as new target')
-                #newspec_wt = st.sidebar.slider('Weight', 0, 1, 0.5)
-                newspec_wt = st.sidebar.number_input('Weight', min_value=0, max_value=1, step=0.1)
+                st.markdown('Provide weights between 0 and 1: 1 being all the weights to new spectral as new target')
+                #newspec_wt = st.slider('Weight', 0, 1, 0.5)
+                newspec_wt = st.number_input('Weight', min_value=0, max_value=1, step=0.1)
                 st.write('You choose weight for new spectral:', newspec_wt)
                 #print("Provide weights between 0 and 1: 1 being all the weights to new spectral as new target")
                 #newspec_wt = float(input("enter weightage: "))
