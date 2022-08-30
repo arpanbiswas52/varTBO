@@ -201,7 +201,7 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func):
         ax[1].imshow(lowres_image.detach().numpy())
         ax[1].plot(idx1, idx2, 'x', color="red")
         #plt.show()
-        st.pyplot(fig)
+        st.pyplot(fig, clear_figure ="True")
 
     else:
     # Figure for user choice
@@ -213,7 +213,7 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func):
         ax[2].plot(V,target_func)
         ax[2].set_title('Current target function')
         #plt.show()
-        st.pyplot(fig)
+        st.pyplot(fig, clear_figure ="True")
 
 
     st.sidebar.markdown('Rating: 0-Bad, 1-Good, 2-Very good')
@@ -401,7 +401,7 @@ def plot_iteration_results(train_X, train_Y, test_X, y_pred_means, y_pred_vars, 
     ax[2].set_title('Objective (GP var) map')
     #ax[2].colorbar(b)
     #plt.show()
-    st.pyplot(fig)
+    st.pyplot(fig, clear_figure ="True")
     
 
     return X_opt, X_opt_GP
