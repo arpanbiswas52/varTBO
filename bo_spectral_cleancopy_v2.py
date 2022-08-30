@@ -191,11 +191,9 @@ def func_obj(X, spec_norm, V, wcount_good, target_func, vote):
     return obj
 
 ##@title generate/update target loop
-def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func):
+def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, count):
     #count_good= 0
-    count1= 0
-    count2 =0
-    count3 =0
+
     idx1 = int(X[0, 0])
     idx2 = int(X[0, 1])
     #print(idx1, idx2)
@@ -225,8 +223,8 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func):
 
     st.sidebar.markdown('Rating: 0-Bad, 1-Good, 2-Very good')
     #vote = st.sidebar.slider('Rate', 0, 2, 0)
-    vote = st.sidebar.number_input('Rate', min_value=0, max_value=2, value=1, key= count1)
-    count1 += 1
+    vote = st.sidebar.number_input('Rate', min_value=0, max_value=2, value=1, key= count)
+    count += 1
     st.write('Vote for current spectral', vote)
 
     #print("Rating: 0-Bad, 1-Good, 2-Very good")
@@ -236,15 +234,15 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func):
         #wcount_good = 1
         if ((wcount_good) > 0): #Only if we already have selected good spectral in early iterations
             st.sidebar.markdown('Do you want to update preference to new spectral over prioir mean target (Y/N)?')
-            newspec_pref = st.sidebar.radio("Select",('Yes', 'No'), key = count2)
-            count2 +=1
+            newspec_pref = st.sidebar.radio("Select",('Yes', 'No'), key = count)
+            count +=1
             st.write('You selected', newspec_pref)
             #newspec_pref = str(input("Do you want to update preference to new spectral over prioir mean target (Y/N): "))
             if (newspec_pref == 'Yes'):
                 st.sidebar.markdown('Provide weights between 0 and 1: 1 being all the weights to new spectral as new target')
                 #newspec_wt = st.slider('Weight', 0, 1, 0.5)
-                newspec_wt = st.sidebar.number_input('Weight', min_value=0.0, max_value=1.0, step=0.1, key=count3)
-                count3 +=1
+                newspec_wt = st.sidebar.number_input('Weight', min_value=0.0, max_value=1.0, step=0.1, key=count)
+                count +=1
                 st.write('You choose weight for new spectral:', newspec_wt)
                 #print("Provide weights between 0 and 1: 1 being all the weights to new spectral as new target")
                 #newspec_wt = float(input("enter weightage: "))
@@ -297,12 +295,13 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
     x = torch.empty((1,2))
     # First generate target loop, based on initial training data
     wcount_good= 0
+    count=0
     target_func = torch.zeros(spec_norm.shape[2])
     for i in range(0, num):
         x[0, 0] = train_X[i, 0]
         x[0, 1] = train_X[i, 1]
         print("Sample #" + str(m + 1))
-        pref[i, 0], wcount_good, target_func = generate_targetobj(x, spec_norm, lowres_image, V, wcount_good, target_func)
+        pref[i, 0], wcount_good, target_func = generate_targetobj(x, spec_norm, lowres_image, V, wcount_good, target_func, count)
         m = m + 1
 
     # Once target loop is defined (unless are loops are selected bad by user), we compute the obj
