@@ -46,32 +46,32 @@ import matplotlib.gridspec as gridspec
 
 
 # Import GP and BoTorch functions
-import gpytorch as gpt
-from botorch.models import SingleTaskGP, ModelListGP
+#import gpytorch as gpt
+#from botorch.models import SingleTaskGP, ModelListGP
 #from botorch.models import gpytorch
-from botorch.fit import fit_gpytorch_model
-from botorch.models.gpytorch import GPyTorchModel
-from botorch.utils import standardize
-from gpytorch.distributions import MultivariateNormal
-from gpytorch.kernels import ScaleKernel, RBFKernel, MaternKernel
-from gpytorch.likelihoods import GaussianLikelihood
-from gpytorch.means import ConstantMean, LinearMean
-from gpytorch.mlls import ExactMarginalLogLikelihood
-from botorch.acquisition import UpperConfidenceBound
-from botorch.optim import optimize_acqf
-from botorch.acquisition import qExpectedImprovement
-from botorch.acquisition import ExpectedImprovement
-from botorch.sampling import IIDNormalSampler
-from botorch.sampling import SobolQMCNormalSampler
-from gpytorch.likelihoods.likelihood import Likelihood
-from gpytorch.constraints import GreaterThan
+#from botorch.fit import fit_gpytorch_model
+#from botorch.models.gpytorch import GPyTorchModel
+#from botorch.utils import standardize
+#from gpytorch.distributions import MultivariateNormal
+#from gpytorch.kernels import ScaleKernel, RBFKernel, MaternKernel
+#from gpytorch.likelihoods import GaussianLikelihood
+#from gpytorch.means import ConstantMean, LinearMean
+#from gpytorch.mlls import ExactMarginalLogLikelihood
+#from botorch.acquisition import UpperConfidenceBound
+#from botorch.optim import optimize_acqf
+#from botorch.acquisition import qExpectedImprovement
+#from botorch.acquisition import ExpectedImprovement
+#from botorch.sampling import IIDNormalSampler
+#from botorch.sampling import SobolQMCNormalSampler
+#from gpytorch.likelihoods.likelihood import Likelihood
+#from gpytorch.constraints import GreaterThan
 #from gpytorch.utils.broadcasting import _mul_broadcast_shape
 
-from botorch.generation import get_best_candidates, gen_candidates_torch
-from botorch.optim import gen_batch_initial_conditions
+#from botorch.generation import get_best_candidates, gen_candidates_torch
+#from botorch.optim import gen_batch_initial_conditions
 
 
-from gpytorch.models import ExactGP
+#from gpytorch.models import ExactGP
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from smt.sampling_methods import LHS
 from torch.optim import SGD
