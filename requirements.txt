@@ -5,3 +5,4 @@ matplotlib
 gpytorch
 botorch
 smt
+ipywidgets
