@@ -198,7 +198,8 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func):
         ax[0].set_title('loc:' +str(idx1) +"," + str(idx2))
         ax[1].imshow(lowres_image.detach().numpy())
         ax[1].plot(idx1, idx2, 'x', color="red")
-        plt.show()
+        #plt.show()
+        st.pyplot(fig)
 
     else:
     # Figure for user choice
@@ -209,11 +210,13 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func):
         ax[1].plot(idx1, idx2, 'x', color="red")
         ax[2].plot(V,target_func)
         ax[2].set_title('Current target function')
-        plt.show()
+        #plt.show()
+        st.pyplot(fig)
 
 
     st.sidebar.markdown('Rating: 0-Bad, 1-Good, 2-Very good')
     vote = st.sidebar.slider('Rate', 0, 2, 0)
+    st.write('Vote for current spectral', vote)
 
     #print("Rating: 0-Bad, 1-Good, 2-Very good")
     #vote = float(input("enter rating: "))
@@ -221,16 +224,18 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func):
         newspec_wt = 1
         if ((wcount_good) > 0): #Only if we already have selected good spectral in early iterations
             st.sidebar.markdown('Do you want to update preference to new spectral over prioir mean target (Y/N)?')
-            Update-preferance = ['Y','N']
-            newspec_pref = st.sidebar.selectbox('newspec_pref', Update-preferance)
+            newspec_pref = st.radio("Select",('Yes', 'No'))
+            st.write('You selected', newspec_pref)
             #newspec_pref = str(input("Do you want to update preference to new spectral over prioir mean target (Y/N): "))
-            if (newspec_pref == 'Y'):
+            if (newspec_pref == 'Yes'):
                 st.sidebar.markdown('Provide weights between 0 and 1: 1 being all the weights to new spectral as new target')
                 newspec_wt = st.sidebar.slider('Weight', 0, 1, 0.5)
+                st.write('You choose weight for new spectral:', newspec_wt)
                 #print("Provide weights between 0 and 1: 1 being all the weights to new spectral as new target")
                 #newspec_wt = float(input("enter weightage: "))
             else:
                 newspec_wt = 0.5
+                st.write('Default weight for new spectral: 0.5')
         wcount_good =wcount_good + vote
         target_func = (((1-newspec_wt)*target_func*(wcount_good-vote))\
                        + (newspec_wt*vote*spec_norm[idx1, idx2, :]))/(((wcount_good-vote)*(1-newspec_wt))\
@@ -506,7 +511,8 @@ def plot_iteration_results(train_X, train_Y, test_X, y_pred_means, y_pred_vars, 
     fig.colorbar(b, cax=cax, orientation='vertical')
     ax[2].set_title('Objective (GP var) map')
     #ax[2].colorbar(b)
-    plt.show()
+    #plt.show()
+    st.pyplot(fig)
     
 
     return X_opt, X_opt_GP
@@ -579,6 +585,24 @@ def BO_vartarget(X, fix_params, num_start, N):
     user_votes = var_params[1]
     optim_results = [X_opt, X_opt_GP, user_votes, explored_data]
 
+    #Plotting optimal spectral
+
+    #Optimal from estimated GP
+    st.markdown("""
+      - Optimal spectral from estimated GP
+    """)
+    fig, ax = plt.subplots()
+    ax.plot(V, loop_norm[int(X_opt_GP[0, 0]),int(X_opt_GP[0, 1]),:])
+    #plt.show()
+    st.pylot(fig)
+
+    #Optimal from evaluated samples
+    st.markdown("""
+      - Optimal spectral from evaluated samples
+    """)
+    fig, ax = plt.subplots()
+    ax.plot(V, loop_norm[int(X_opt[0, 0]), int(X_opt[0, 1]),:])
+    plt.show(fig)
     #Save few data
     np.save("optim_results", optim_results)
 
