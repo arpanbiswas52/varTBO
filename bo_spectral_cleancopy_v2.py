@@ -238,7 +238,7 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func):
             if (newspec_pref == 'Yes'):
                 st.sidebar.markdown('Provide weights between 0 and 1: 1 being all the weights to new spectral as new target')
                 #newspec_wt = st.slider('Weight', 0, 1, 0.5)
-                newspec_wt = st.sidebar.number_input('Weight', min_value=0, max_value=1, step=0.1)
+                newspec_wt = st.sidebar.number_input('Weight', min_value=0.0, max_value=1.0, step=0.1)
                 st.write('You choose weight for new spectral:', newspec_wt)
                 #print("Provide weights between 0 and 1: 1 being all the weights to new spectral as new target")
                 #newspec_wt = float(input("enter weightage: "))
