@@ -222,7 +222,7 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func):
 
     st.sidebar.markdown('Rating: 0-Bad, 1-Good, 2-Very good')
     #vote = st.sidebar.slider('Rate', 0, 2, 0)
-    vote = st.sidebar.number_input('Rate', min_value=0, max_value=2)
+    vote = st.sidebar.number_input('Rate', min_value=0, max_value=2, value=1)
     st.write('Vote for current spectral', vote)
 
     #print("Rating: 0-Bad, 1-Good, 2-Very good")
