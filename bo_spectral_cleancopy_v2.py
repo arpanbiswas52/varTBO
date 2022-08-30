@@ -29,7 +29,7 @@ import random
 from PIL import Image
 from typing import Tuple
 #import ipywidgets as widgets
-from IPython.display import display
+#from IPython.display import display
 import pylab as pl
 from IPython.display import clear_output
 import pdb
