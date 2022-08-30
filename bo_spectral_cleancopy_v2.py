@@ -160,7 +160,11 @@ def interactive_BO(df):
 
     #Fixed parameters of VAE model
     fix_params = [loop_norm, bepfm_lowres_image, V]
-    X_opt, X_opt_GP, var_params, explored_locs, final_GP_estim = BO_vartarget(X, fix_params, num_start, N)
+    if st.button('Start Analysis'):
+        st.write('Analysis started')
+        X_opt, X_opt_GP, var_params, explored_locs, final_GP_estim = BO_vartarget(X, fix_params, num_start, N)
+    else:
+        st.write('Click to start analysis')
 
 #@title
 ##@title objective function evaluation- We maximize the similarity index(negative mse) between target and sampled spectral and maximize the reward as per user voting of sampled spectral
