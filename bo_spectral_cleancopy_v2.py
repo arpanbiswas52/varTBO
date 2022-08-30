@@ -229,6 +229,7 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func):
     #vote = float(input("enter rating: "))
     if(vote>0):
         newspec_wt = 1
+        wcount_good = 1
         if ((wcount_good) > 0): #Only if we already have selected good spectral in early iterations
             st.sidebar.markdown('Do you want to update preference to new spectral over prioir mean target (Y/N)?')
             newspec_pref = st.radio("Select",('Yes', 'No'))
