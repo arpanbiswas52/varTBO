@@ -115,8 +115,8 @@ def detail_info():
 
 def interactive_BO(df):
     st.sidebar.markdown('## Initialization')
-    num_start = st.sidebar.slider('Starting Samples', 2, 30, 10)
-    N = st.sidebar.slider('Total BO samples', 10, 200, 100)
+    num_start = st.sidebar.slider('Starting Samples', 2, 30, 5)
+    N = st.sidebar.slider('Total BO samples', 10, 200, 30)
 
     #Get data
     loop_mat = df[0]
@@ -160,11 +160,11 @@ def interactive_BO(df):
 
     #Fixed parameters of VAE model
     fix_params = [loop_norm, bepfm_lowres_image, V]
-    if st.button('Start Analysis'):
-        st.write('Analysis started')
-        X_opt, X_opt_GP, var_params, explored_locs, final_GP_estim = BO_vartarget(X, fix_params, num_start, N)
-    else:
-        st.write('Click to start analysis')
+    #if st.button('Start Analysis'):
+    #    st.write('Analysis started')
+    X_opt, X_opt_GP, var_params, explored_locs, final_GP_estim = BO_vartarget(X, fix_params, num_start, N)
+    #else:
+    #    st.write('Click to start analysis')
 
 #@title
 ##@title objective function evaluation- We maximize the similarity index(negative mse) between target and sampled spectral and maximize the reward as per user voting of sampled spectral
@@ -199,17 +199,17 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func):
     #target_loop = torch.empty(loop_norm.shape[2])
     if (wcount_good == 0):
     # Figure for user choice
-        fig,ax=plt.subplots(ncols=2,figsize=(12,4))
+        fig1,ax=plt.subplots(ncols=2,figsize=(12,4))
         ax[0].plot(V,spec_norm[idx1, idx2, :])
         ax[0].set_title('loc:' +str(idx1) +"," + str(idx2))
         ax[1].imshow(lowres_image.detach().numpy())
         ax[1].plot(idx1, idx2, 'x', color="red")
         #plt.show()
-        st.pyplot(fig, clear_figure ="True")
+        st.pyplot(fig1, clear_figure ="True")
 
     else:
     # Figure for user choice
-        fig,ax=plt.subplots(ncols=3,figsize=(12,4))
+        fig2,ax=plt.subplots(ncols=3,figsize=(12,4))
         ax[0].plot(V,spec_norm[idx1, idx2, :])
         ax[0].set_title('loc:' +str(idx1) +"," + str(idx2))
         ax[1].imshow(lowres_image.detach().numpy())
@@ -217,11 +217,12 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func):
         ax[2].plot(V,target_func)
         ax[2].set_title('Current target function')
         #plt.show()
-        st.pyplot(fig, clear_figure ="True")
+        st.pyplot(fig2, clear_figure ="True")
 
 
     st.sidebar.markdown('Rating: 0-Bad, 1-Good, 2-Very good')
-    vote = st.sidebar.slider('Rate', 0, 2, 0)
+    #vote = st.sidebar.slider('Rate', 0, 2, 0)
+    vote = st.sidebar.number_input('Rate', min_value=0, max_value=2)
     st.write('Vote for current spectral', vote)
 
     #print("Rating: 0-Bad, 1-Good, 2-Very good")
@@ -235,7 +236,8 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func):
             #newspec_pref = str(input("Do you want to update preference to new spectral over prioir mean target (Y/N): "))
             if (newspec_pref == 'Yes'):
                 st.sidebar.markdown('Provide weights between 0 and 1: 1 being all the weights to new spectral as new target')
-                newspec_wt = st.sidebar.slider('Weight', 0, 1, 0.5)
+                #newspec_wt = st.sidebar.slider('Weight', 0, 1, 0.5)
+                newspec_wt = st.sidebar.number_input('Weight', min_value=0, max_value=1, step=0.1)
                 st.write('You choose weight for new spectral:', newspec_wt)
                 #print("Provide weights between 0 and 1: 1 being all the weights to new spectral as new target")
                 #newspec_wt = float(input("enter weightage: "))
