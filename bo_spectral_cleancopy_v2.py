@@ -65,9 +65,11 @@ from botorch.sampling import IIDNormalSampler
 from botorch.sampling import SobolQMCNormalSampler
 from gpytorch.likelihoods.likelihood import Likelihood
 from gpytorch.constraints import GreaterThan
+from gpytorch.utils.broadcasting import _mul_broadcast_shape
 
 from botorch.generation import get_best_candidates, gen_candidates_torch
 from botorch.optim import gen_batch_initial_conditions
+
 
 from gpytorch.models import ExactGP
 from mpl_toolkits.axes_grid1 import make_axes_locatable
