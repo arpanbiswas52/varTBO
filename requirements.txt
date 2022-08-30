@@ -8,4 +8,4 @@ smt
 scikit-image
 sklearn
 scipy
-ipywidgets
+
