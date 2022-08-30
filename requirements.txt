@@ -6,3 +6,6 @@ gpytorch
 botorch
 smt
 ipywidgets
+skimage
+sklearn
+scipy
