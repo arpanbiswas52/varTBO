@@ -227,15 +227,18 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func):
     #vote = st.sidebar.number_input('Rate', min_value=0, max_value=2, value=1, key= number)
     #count = count + 1
     options = ["Bad", "Good", "Very Good"]
-    vote = st.radio('Rate', options, key= "radio_options")
+    Rate = st.radio('Rate', options, key= "radio_options")
     st.session_state
-    if vote == "Bad":
+    if Rate == "Bad":
+        vote= 0
         st.write('Vote given for current spectral', vote)
     
-    elif vote == "Good":
+    elif Rate == "Good":
+        vote= 1
         st.write('Vote given for current spectral', vote)
         
     else:
+        vote =2
         st.write('Vote given for current spectral', vote)
 
     wcount_good =0
