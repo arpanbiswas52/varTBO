@@ -244,12 +244,12 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, 
         newspec_wt = 1
         if ((wcount_good) > 0): #Only if we already have selected good spectral in early iterations
             st.markdown('Do you want to update preference to new spectral over prioir mean target (Y/N)?')
-            newspec_pref = st.radio("Select",('Yes', 'No'), key="radio_options")
+            newspec_pref = st.radio("Select",('Yes', 'No'), key=m2)
             st.write('You selected', newspec_pref)
             #newspec_pref = str(input("Do you want to update preference to new spectral over prioir mean target (Y/N): "))
             if (newspec_pref == 'Yes'):
                 st.markdown('Provide weights between 0 and 1: 1 being all the weights to new spectral as new target')
-                newspec_wt = st.number_input('Weight', min_value=0.0, max_value=1.0, step =0.1, key= m2)
+                newspec_wt = st.number_input('Weight', min_value=0.0, max_value=1.0, step =0.1, key= m3)
                 st.write('You choose weight for new spectral:', newspec_wt)
                 #print("Provide weights between 0 and 1: 1 being all the weights to new spectral as new target")
                 #newspec_wt = float(input("enter weightage: "))
@@ -269,12 +269,12 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, 
         newspec_wt = 1
         if ((wcount_good) > 0): #Only if we already have selected good spectral in early iterations
             st.markdown('Do you want to update preference to new spectral over prioir mean target (Y/N)?')
-            newspec_pref = st.radio("Select",('Yes', 'No'), key="radio_options")
+            newspec_pref = st.radio("Select",('Yes', 'No'), key=m2)
             st.write('You selected', newspec_pref)
             #newspec_pref = str(input("Do you want to update preference to new spectral over prioir mean target (Y/N): "))
             if (newspec_pref == 'Yes'):
                 st.markdown('Provide weights between 0 and 1: 1 being all the weights to new spectral as new target')
-                newspec_wt = st.number_input('Weight', min_value=0.0, max_value=1.0, step =0.1, key= m2)
+                newspec_wt = st.number_input('Weight', min_value=0.0, max_value=1.0, step =0.1, key= m3)
                 st.write('You choose weight for new spectral:', newspec_wt)
                 #print("Provide weights between 0 and 1: 1 being all the weights to new spectral as new target")
                 #newspec_wt = float(input("enter weightage: "))
@@ -343,6 +343,8 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
         st.write("Sample #", m+1)
         pref[i, 0], wcount_good, target_func = generate_targetobj(x, spec_norm, lowres_image, V, wcount_good, target_func, m)
         m = m + 1
+        m2 = m2 + 1
+        m3 = m3 + 1
     idx1 = int(x[0, 0])
     idx2 = int(x[0, 1])
     fig3,ax=plt.subplots(ncols=3,figsize=(12,4))
@@ -474,8 +476,9 @@ def plot_iteration_results(train_X, train_Y, test_X, y_pred_means, y_pred_vars, 
 def BO_vartarget(X, fix_params, num_start, N):
     num = num_start
     m = 0
-    global m2
+    global m2, m3
     m2 = 0
+    m3 = 0
     # Initialization: evaluate few initial data normalize data
     test_X, test_X_norm, train_X, train_X_norm, train_Y, var_params, idx, m = \
         normalize_get_initialdata_KL(X, fix_params, num, m)
