@@ -191,7 +191,7 @@ def func_obj(X, spec_norm, V, wcount_good, target_func, vote):
     return obj
 
 ##@title generate/update target loop
-def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, m):
+def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, m1, m2, m3):
     #count_good= 0
 
     idx1 = int(X[0, 0])
@@ -229,7 +229,7 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, 
     #vote = st.sidebar.number_input('Rate', min_value=0, max_value=2, value=1, key= number)
     #count = count + 1
     options = ["Bad", "Good", "Very Good"]
-    Rate = st.radio('Rate', options, key= m)
+    Rate = st.radio('Rate', options, key= m1)
    
     if Rate == "Bad":
         vote = 0
@@ -302,6 +302,9 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
     X_feas = torch.empty((X.shape[1]**X.shape[0], X.shape[0]))
     k=0
     spec_norm, lowres_image, V  = fix_params[0], fix_params[1], fix_params[2]
+    m1, m2, m3  = m[0], m[1], m[2]
+    
+    
     for t1 in range(0, X.shape[1]):
         for t2 in range(0, X.shape[1]):
             X_feas[k, 0] = X[0, t1]
@@ -341,8 +344,8 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
         #print("Sample #" + str(m + 1))
         st.write("Starting samples", train_X)
         st.write("Sample #", m+1)
-        pref[i, 0], wcount_good, target_func = generate_targetobj(x, spec_norm, lowres_image, V, wcount_good, target_func, m)
-        m = m + 1
+        pref[i, 0], wcount_good, target_func = generate_targetobj(x, spec_norm, lowres_image, V, wcount_good, target_func, m1, m2, m3)
+        m1 = m1 + 1
         m2 = m2 + 1
         m3 = m3 + 1
     idx1 = int(x[0, 0])
@@ -378,6 +381,7 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
 def augment_newdata_KL(acq_X, acq_X_norm, train_X, train_X_norm, train_Y, fix_params, var_params, m):
     spec_norm, lowres_image, V  = fix_params[0], fix_params[1], fix_params[2]
     wcount_good, pref, target_func = var_params[0], var_params[1], var_params[2]
+    
 
     nextX = acq_X
     nextX_norm = acq_X_norm
@@ -475,7 +479,10 @@ def plot_iteration_results(train_X, train_Y, test_X, y_pred_means, y_pred_vars, 
 #BO framework integration
 def BO_vartarget(X, fix_params, num_start, N):
     num = num_start
-    m = 0
+    m1 = 0
+    m2 = 1000
+    m3 = 100000
+    m = [m1, m2, m3]
     # Initialization: evaluate few initial data normalize data
     test_X, test_X_norm, train_X, train_X_norm, train_Y, var_params, idx, m = \
         normalize_get_initialdata_KL(X, fix_params, num, m)
@@ -484,9 +491,6 @@ def BO_vartarget(X, fix_params, num_start, N):
     st.markdown("Initial evaluation complete. Start BO")
 
 
-global m2, m3
-m2 = 0
-m3 = 0
 @st.cache
 def load_data():
     loop_mat = np.load("loop_mat.npy")
