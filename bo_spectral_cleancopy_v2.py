@@ -230,7 +230,7 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, 
     #count = count + 1
     options = ["Bad", "Good", "Very Good"]
     Rate = st.radio('Rate', options, key= "r")
-    st.session_state.r = st.session_state.r + 1
+    #st.session_state.r = st.session_state.r + 1
     if Rate == "Bad":
         vote = 0
         wcount_good = wcount_good + vote
