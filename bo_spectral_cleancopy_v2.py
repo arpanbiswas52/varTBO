@@ -230,16 +230,19 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func):
     Rate = st.radio('Rate', options, key= "radio_options")
     st.session_state
     if Rate == "Bad":
-        vote= 0
-        st.write('Vote given for current spectral', vote)
+        vote = 0
+        st.write('Vote given for current spectral', Rate)
+        st.write('st.session_state.key')
     
     elif Rate == "Good":
-        vote= 1
-        st.write('Vote given for current spectral', vote)
+        vote = 1
+        st.write('Vote given for current spectral', Rate)
+        st.write('st.session_state.key')
         
     else:
-        vote =2
-        st.write('Vote given for current spectral', vote)
+        vote = 2
+        st.write('Vote given for current spectral', Rate)
+        st.write('st.session_state.key')
 
     wcount_good =0
     target_func =0
