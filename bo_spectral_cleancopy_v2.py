@@ -244,12 +244,12 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, 
         newspec_wt = 1
         if ((wcount_good) > 0): #Only if we already have selected good spectral in early iterations
             st.markdown('Do you want to update preference to new spectral over prioir mean target (Y/N)?')
-            newspec_pref = st.radio("Select",('Yes', 'No'), key=m2)
+            newspec_pref = st.radio("Select",('Yes', 'No'), index=1, key=m2)
             st.write('You selected', newspec_pref)
             #newspec_pref = str(input("Do you want to update preference to new spectral over prioir mean target (Y/N): "))
             if (newspec_pref == 'Yes'):
                 st.markdown('Provide weights between 0 and 1: 1 being all the weights to new spectral as new target')
-                newspec_wt = st.number_input('Weight', min_value=0.0, max_value=1.0, step =0.1, key= m3)
+                newspec_wt = st.number_input('Weight', min_value=0.0, max_value=1.0, value =1.0, step =0.1, key= m3)
                 st.write('You choose weight for new spectral:', newspec_wt)
                 #print("Provide weights between 0 and 1: 1 being all the weights to new spectral as new target")
                 #newspec_wt = float(input("enter weightage: "))
@@ -269,12 +269,12 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, 
         newspec_wt = 1
         if ((wcount_good) > 0): #Only if we already have selected good spectral in early iterations
             st.markdown('Do you want to update preference to new spectral over prioir mean target (Y/N)?')
-            newspec_pref = st.radio("Select",('Yes', 'No'), key=m2)
+            newspec_pref = st.radio("Select",('Yes', 'No'), index =1, key=m2)
             st.write('You selected', newspec_pref)
             #newspec_pref = str(input("Do you want to update preference to new spectral over prioir mean target (Y/N): "))
             if (newspec_pref == 'Yes'):
                 st.markdown('Provide weights between 0 and 1: 1 being all the weights to new spectral as new target')
-                newspec_wt = st.number_input('Weight', min_value=0.0, max_value=1.0, step =0.1, key= m3)
+                newspec_wt = st.number_input('Weight', min_value=0.0, max_value=1.0, value = 1.0, step =0.1, key= m3)
                 st.write('You choose weight for new spectral:', newspec_wt)
                 #print("Provide weights between 0 and 1: 1 being all the weights to new spectral as new target")
                 #newspec_wt = float(input("enter weightage: "))
