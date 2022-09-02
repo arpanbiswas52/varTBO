@@ -191,7 +191,7 @@ def func_obj(X, spec_norm, V, wcount_good, target_func, vote):
     return obj
 
 ##@title generate/update target loop
-def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, count):
+def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func):
     #count_good= 0
 
     idx1 = int(X[0, 0])
@@ -238,7 +238,9 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, 
     else:
         st.write('Vote given for current spectral', vote)
 
-    return vote
+    wcount_good =0
+    target_func =0
+    return vote, wcount_good, target_func  
 
 
 
@@ -280,13 +282,15 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
     x = torch.empty((1,2))
     # First generate target loop, based on initial training data
     wcount_good= 0
-    count=0
+    #count=0
     target_func = torch.zeros(spec_norm.shape[2])
     for i in range(0, num):
         x[0, 0] = train_X[i, 0]
         x[0, 1] = train_X[i, 1]
-        print("Sample #" + str(m + 1))
-        pref[i, 0], wcount_good, target_func = generate_targetobj(x, spec_norm, lowres_image, V, wcount_good, target_func, count)
+        #print("Sample #" + str(m + 1))
+        st.write("Starting samples", train_X)
+        st.write("Sample #", m+1)
+        pref[i, 0], wcount_good, target_func = generate_targetobj(x, spec_norm, lowres_image, V, wcount_good, target_func)
         m = m + 1
 
     # Once target loop is defined (unless are loops are selected bad by user), we compute the obj
