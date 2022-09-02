@@ -249,7 +249,7 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, 
             #newspec_pref = str(input("Do you want to update preference to new spectral over prioir mean target (Y/N): "))
             if (newspec_pref == 'Yes'):
                 st.markdown('Provide weights between 0 and 1: 1 being all the weights to new spectral as new target')
-                newspec_wt = st.number_input('Weight', min_value=0.0, max_value=1.0, step =0.1, key= "wts")
+                newspec_wt = st.number_input('Weight', min_value=0.0, max_value=1.0, step =0.1, key= m2)
                 st.write('You choose weight for new spectral:', newspec_wt)
                 #print("Provide weights between 0 and 1: 1 being all the weights to new spectral as new target")
                 #newspec_wt = float(input("enter weightage: "))
@@ -274,7 +274,7 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, 
             #newspec_pref = str(input("Do you want to update preference to new spectral over prioir mean target (Y/N): "))
             if (newspec_pref == 'Yes'):
                 st.markdown('Provide weights between 0 and 1: 1 being all the weights to new spectral as new target')
-                newspec_wt = st.number_input('Weight', min_value=0.0, max_value=1.0, step =0.1, key= "wts")
+                newspec_wt = st.number_input('Weight', min_value=0.0, max_value=1.0, step =0.1, key= m2)
                 st.write('You choose weight for new spectral:', newspec_wt)
                 #print("Provide weights between 0 and 1: 1 being all the weights to new spectral as new target")
                 #newspec_wt = float(input("enter weightage: "))
@@ -474,6 +474,7 @@ def plot_iteration_results(train_X, train_Y, test_X, y_pred_means, y_pred_vars, 
 def BO_vartarget(X, fix_params, num_start, N):
     num = num_start
     m = 0
+    global m2 = 0
     # Initialization: evaluate few initial data normalize data
     test_X, test_X_norm, train_X, train_X_norm, train_Y, var_params, idx, m = \
         normalize_get_initialdata_KL(X, fix_params, num, m)
