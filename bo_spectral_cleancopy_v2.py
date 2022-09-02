@@ -233,20 +233,23 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, 
     st.session_state
     if Rate == "Bad":
         vote = 0
+        wcount_good = wcount_good + vote
         st.write('Vote given for current spectral', Rate)
         #st.write(st.session_state.key)
     
     elif Rate == "Good":
         vote = 1
+        wcount_good = wcount_good + vote
         st.write('Vote given for current spectral', Rate)
         #st.write(st.session_state.key)
         
     else:
         vote = 2
+        wcount_good = wcount_good + vote
         st.write('Vote given for current spectral', Rate)
         #st.write(st.session_state.key)
 
-    wcount_good =0
+    
     target_func =0
     return vote, wcount_good, target_func  
 
