@@ -222,7 +222,7 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, 
 
 
     st.markdown('Rating: 0-Bad, 1-Good, 2-Very good')
-    "st.session_state object:", st.session_state
+    #"st.session_state object:", st.session_state
     #if 'key' not in st.session_state:
     #    st.session_state['key'] = m
     #vote = st.sidebar.slider('Rate', 0, 2, 0)
