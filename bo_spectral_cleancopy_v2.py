@@ -343,7 +343,7 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
         x[0, 1] = train_X[i, 1]
         #print("Sample #" + str(m + 1))
         st.write("Starting samples", train_X)
-        st.write("Sample #", m+1)
+        st.write("Sample #", m1+1)
         pref[i, 0], wcount_good, target_func = generate_targetobj(x, spec_norm, lowres_image, V, wcount_good, target_func, m1, m2, m3)
         m1 = m1 + 1
         m2 = m2 + 1
