@@ -239,18 +239,57 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, 
     
     elif Rate == "Good":
         vote = 1
-        wcount_good = wcount_good + vote
+        #wcount_good = wcount_good + vote
         st.write('Vote given for current spectral', Rate)
+        newspec_wt = 1
+        if ((wcount_good) > 0): #Only if we already have selected good spectral in early iterations
+            st.sidebar.markdown('Do you want to update preference to new spectral over prioir mean target (Y/N)?')
+            newspec_pref = st.radio("Select",('Yes', 'No'))
+            st.write('You selected', newspec_pref)
+            #newspec_pref = str(input("Do you want to update preference to new spectral over prioir mean target (Y/N): "))
+            if (newspec_pref == 'Yes'):
+                st.sidebar.markdown('Provide weights between 0 and 1: 1 being all the weights to new spectral as new target')
+                newspec_wt = st.sidebar.slider('Weight', 0, 1, 0.5)
+                st.write('You choose weight for new spectral:', newspec_wt)
+                #print("Provide weights between 0 and 1: 1 being all the weights to new spectral as new target")
+                #newspec_wt = float(input("enter weightage: "))
+            else:
+                newspec_wt = 0.5
+                st.write('Default weight for new spectral: 0.5')
+        wcount_good =wcount_good + vote
+        target_func = (((1-newspec_wt)*target_func*(wcount_good-vote))\
+                       + (newspec_wt*vote*spec_norm[idx1, idx2, :]))/(((wcount_good-vote)*(1-newspec_wt))\
+                       + (vote*newspec_wt))
         #st.write(st.session_state.key)
         
     else:
         vote = 2
-        wcount_good = wcount_good + vote
+        #wcount_good = wcount_good + vote
         st.write('Vote given for current spectral', Rate)
+        newspec_wt = 1
+        if ((wcount_good) > 0): #Only if we already have selected good spectral in early iterations
+            st.sidebar.markdown('Do you want to update preference to new spectral over prioir mean target (Y/N)?')
+            newspec_pref = st.radio("Select",('Yes', 'No'))
+            st.write('You selected', newspec_pref)
+            #newspec_pref = str(input("Do you want to update preference to new spectral over prioir mean target (Y/N): "))
+            if (newspec_pref == 'Yes'):
+                st.sidebar.markdown('Provide weights between 0 and 1: 1 being all the weights to new spectral as new target')
+                newspec_wt = st.sidebar.slider('Weight', 0, 1, 0.5)
+                st.write('You choose weight for new spectral:', newspec_wt)
+                #print("Provide weights between 0 and 1: 1 being all the weights to new spectral as new target")
+                #newspec_wt = float(input("enter weightage: "))
+            else:
+                newspec_wt = 0.5
+                st.write('Default weight for new spectral: 0.5')
+        wcount_good =wcount_good + vote
+        target_func = (((1-newspec_wt)*target_func*(wcount_good-vote))\
+                       + (newspec_wt*vote*spec_norm[idx1, idx2, :]))/(((wcount_good-vote)*(1-newspec_wt))\
+                       + (vote*newspec_wt))
+        
         #st.write(st.session_state.key)
 
     
-    target_func =0
+    #target_func =0
     return vote, wcount_good, target_func  
 
 
