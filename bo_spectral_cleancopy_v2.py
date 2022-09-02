@@ -474,7 +474,8 @@ def plot_iteration_results(train_X, train_Y, test_X, y_pred_means, y_pred_vars, 
 def BO_vartarget(X, fix_params, num_start, N):
     num = num_start
     m = 0
-    global m2 = 0
+    global m2
+    m2 = 0
     # Initialization: evaluate few initial data normalize data
     test_X, test_X_norm, train_X, train_X_norm, train_Y, var_params, idx, m = \
         normalize_get_initialdata_KL(X, fix_params, num, m)
