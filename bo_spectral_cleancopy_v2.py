@@ -191,7 +191,7 @@ def func_obj(X, spec_norm, V, wcount_good, target_func, vote):
     return obj
 
 ##@title generate/update target loop
-def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func):
+def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, m):
     #count_good= 0
 
     idx1 = int(X[0, 0])
@@ -223,11 +223,13 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func):
 
     st.markdown('Rating: 0-Bad, 1-Good, 2-Very good')
     "st.session_state object:", st.session_state
+    if 'key' not in st.session_state:
+        st.session_state['key'] = m
     #vote = st.sidebar.slider('Rate', 0, 2, 0)
     #vote = st.sidebar.number_input('Rate', min_value=0, max_value=2, value=1, key= number)
     #count = count + 1
     options = ["Bad", "Good", "Very Good"]
-    Rate = st.radio('Rate', options, key= "radio_options")
+    Rate = st.radio('Rate', options, key= m)
     st.session_state
     if Rate == "Bad":
         vote = 0
@@ -296,7 +298,7 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
         #print("Sample #" + str(m + 1))
         st.write("Starting samples", train_X)
         st.write("Sample #", m+1)
-        pref[i, 0], wcount_good, target_func = generate_targetobj(x, spec_norm, lowres_image, V, wcount_good, target_func)
+        pref[i, 0], wcount_good, target_func = generate_targetobj(x, spec_norm, lowres_image, V, wcount_good, target_func, m)
         m = m + 1
 
     # Once target loop is defined (unless are loops are selected bad by user), we compute the obj
