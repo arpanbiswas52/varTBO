@@ -372,7 +372,8 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
     #print(pref)
     #print(train_Y)
     var_params = [wcount_good, pref, target_func]
-    st.write(var_params)
+    m = [m1, m2, m3]
+    st.write(train_X, train_X_norm, train_Y, m)
     
     return X_feas, X_feas_norm, train_X, train_X_norm, train_Y, var_params, idx, m
 
