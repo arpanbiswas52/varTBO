@@ -343,7 +343,18 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
         st.write("Sample #", m+1)
         pref[i, 0], wcount_good, target_func = generate_targetobj(x, spec_norm, lowres_image, V, wcount_good, target_func, m)
         m = m + 1
-
+    idx1 = int(x[0, 0])
+    idx2 = int(x[0, 1])
+    fig3,ax=plt.subplots(ncols=3,figsize=(12,4))
+    ax[0].plot(V,spec_norm[idx1, idx2, :])
+    ax[0].set_title('loc:' +str(idx1) +"," + str(idx2))
+    ax[1].imshow(lowres_image.detach().numpy())
+    ax[1].plot(idx1, idx2, 'x', color="red")
+    ax[2].plot(V,target_func)
+    ax[2].set_title('Current target function')
+    #plt.show()
+    st.pyplot(fig3, clear_figure ="True")
+    
     # Once target loop is defined (unless are loops are selected bad by user), we compute the obj
     for i in range(0, num):
         x[0, 0] = train_X[i, 0]
@@ -356,6 +367,7 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
     #print(pref)
     #print(train_Y)
     var_params = [wcount_good, pref, target_func]
+    st.write(var_params)
     
     return X_feas, X_feas_norm, train_X, train_X_norm, train_Y, var_params, idx, m
 
