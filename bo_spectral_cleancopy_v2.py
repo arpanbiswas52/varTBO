@@ -223,8 +223,8 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, 
 
     st.markdown('Rating: 0-Bad, 1-Good, 2-Very good')
     "st.session_state object:", st.session_state
-    if 'key' not in st.session_state:
-        st.session_state['key'] = m
+    #if 'key' not in st.session_state:
+    #    st.session_state['key'] = m
     #vote = st.sidebar.slider('Rate', 0, 2, 0)
     #vote = st.sidebar.number_input('Rate', min_value=0, max_value=2, value=1, key= number)
     #count = count + 1
@@ -234,17 +234,17 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, 
     if Rate == "Bad":
         vote = 0
         st.write('Vote given for current spectral', Rate)
-        st.write(st.session_state.key)
+        #st.write(st.session_state.key)
     
     elif Rate == "Good":
         vote = 1
         st.write('Vote given for current spectral', Rate)
-        st.write(st.session_state.key)
+        #st.write(st.session_state.key)
         
     else:
         vote = 2
         st.write('Vote given for current spectral', Rate)
-        st.write(st.session_state.key)
+        #st.write(st.session_state.key)
 
     wcount_good =0
     target_func =0
