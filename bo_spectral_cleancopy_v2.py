@@ -124,55 +124,53 @@ def interactive_BO(df):
         submitted = st.form_submit_button("Start Analysis")
         if submitted:
             st.sidebar.write("starting samples:", num_start, "total BO iterations", N)
+            #Get data
+            loop_mat = df[0]
+            dc_vec = df[1]
+            bepfm_image = df[2]
 
+            n_spectral = 2 # Consider the final loop measurement
+            loop_mat_grid = np.reshape(loop_mat,(60, 60, loop_mat.shape[1], loop_mat.shape[2]))
+            loop = loop_mat_grid[:, :, :, n_spectral] 
+            #print(loop.shape)
 
-    #Get data
-    loop_mat = df[0]
-    dc_vec = df[1]
-    bepfm_image = df[2]
+            #Tranform the image data to map with spectral data
+            grid_dim = loop.shape[1]
+            bepfm_lowres_image = resize(bepfm_image, (grid_dim, grid_dim))
+            #print(bepfm_lowres_image.shape)
 
-    n_spectral = 2 # Consider the final loop measurement
-    loop_mat_grid = np.reshape(loop_mat,(60, 60, loop_mat.shape[1], loop_mat.shape[2]))
-    loop = loop_mat_grid[:, :, :, n_spectral] 
-    #print(loop.shape)
+            #Consider single sweep of voltage to generate hysteresis loop
+            l_vsweep= loop.shape[2]
+            V= dc_vec[:l_vsweep]
+            #print(V.shape)
 
-    #Tranform the image data to map with spectral data
-    grid_dim = loop.shape[1]
-    bepfm_lowres_image = resize(bepfm_image, (grid_dim, grid_dim))
-    #print(bepfm_lowres_image.shape)
+            #Normalize loop data (avoiding drift in data)
+            loop_norm = np.zeros((loop.shape))
+            for i in range(0, loop.shape[0]):
+              for j in range(0, loop.shape[1]):
+                loop_norm[i, j, :] = (loop[i,j,:]- np.mean(loop[i,j,:]))*1e4
 
-    #Consider single sweep of voltage to generate hysteresis loop
-    l_vsweep= loop.shape[2]
-    V= dc_vec[:l_vsweep]
-    #print(V.shape)
+            #print(loop.shape, loop_norm.shape)
 
-    #Normalize loop data (avoiding drift in data)
-    loop_norm = np.zeros((loop.shape))
-    for i in range(0, loop.shape[0]):
-      for j in range(0, loop.shape[1]):
-        loop_norm[i, j, :] = (loop[i,j,:]- np.mean(loop[i,j,:]))*1e4
+            #tranform data into torch
+            loop_norm = torch.from_numpy(loop_norm)
+            V = torch.from_numpy(V)
+            bepfm_lowres_image= torch.from_numpy(bepfm_lowres_image)
 
-    #print(loop.shape, loop_norm.shape)
+            #print(loop_norm.shape, bepfm_lowres_image.shape, V.shape)
+            #latent parameters for defining KL trajectories
+            grid_x1 = torch.arange(0, bepfm_lowres_image.shape[0])
+            grid_x2 = torch.arange(0, bepfm_lowres_image.shape[1])
 
-    #tranform data into torch
-    loop_norm = torch.from_numpy(loop_norm)
-    V = torch.from_numpy(V)
-    bepfm_lowres_image= torch.from_numpy(bepfm_lowres_image)
+            X= torch.vstack((grid_x1, grid_x2))
 
-    #print(loop_norm.shape, bepfm_lowres_image.shape, V.shape)
-    #latent parameters for defining KL trajectories
-    grid_x1 = torch.arange(0, bepfm_lowres_image.shape[0])
-    grid_x2 = torch.arange(0, bepfm_lowres_image.shape[1])
-
-    X= torch.vstack((grid_x1, grid_x2))
-
-    #Fixed parameters of VAE model
-    fix_params = [loop_norm, bepfm_lowres_image, V]
-    #if st.button('Start Analysis'):
-    #    st.write('Analysis started')
-    X_opt, X_opt_GP, var_params, explored_locs, final_GP_estim = BO_vartarget(X, fix_params, num_start, N)
-    #else:
-    #    st.write('Click to start analysis')
+            #Fixed parameters of VAE model
+            fix_params = [loop_norm, bepfm_lowres_image, V]
+            #if st.button('Start Analysis'):
+            #    st.write('Analysis started')
+            X_opt, X_opt_GP, var_params, explored_locs, final_GP_estim = BO_vartarget(X, fix_params, num_start, N)
+            #else:
+            #    st.write('Click to start analysis')
 
 #@title
 ##@title objective function evaluation- We maximize the similarity index(negative mse) between target and sampled spectral and maximize the reward as per user voting of sampled spectral
