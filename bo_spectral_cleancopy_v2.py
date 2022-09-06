@@ -348,7 +348,7 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
     i = 0
     #if st.button("Next spectral", key="next"):
     #for i in range(0, num):
-    if (i<num):
+    for i in range(0, num):
         x[0, 0] = train_X[i, 0]
         x[0, 1] = train_X[i, 1]
         #print("Sample #" + str(m + 1))
@@ -358,22 +358,22 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
         m1 = m1 + 1
         m2 = m2 + 1
         m3 = m3 + 1
-        i = i + 1
+        #i = i + 1
         st.experimental_rerun()
             
-    else:
-        st.markdown("Initial evaluation complete. Start BO")
-        idx1 = int(x[0, 0])
-        idx2 = int(x[0, 1])
-        fig3,ax=plt.subplots(ncols=3,figsize=(12,4))
-        ax[0].plot(V,spec_norm[idx1, idx2, :])
-        ax[0].set_title('loc:' +str(idx1) +"," + str(idx2))
-        ax[1].imshow(lowres_image.detach().numpy())
-        ax[1].plot(idx1, idx2, 'x', color="red")
-        ax[2].plot(V,target_func)
-        ax[2].set_title('Current target function')
-        #plt.show()
-        st.pyplot(fig3, clear_figure ="True")
+    #else:
+    st.markdown("Initial evaluation complete. Start BO")
+    idx1 = int(x[0, 0])
+    idx2 = int(x[0, 1])
+    fig3,ax=plt.subplots(ncols=3,figsize=(12,4))
+    ax[0].plot(V,spec_norm[idx1, idx2, :])
+    ax[0].set_title('loc:' +str(idx1) +"," + str(idx2))
+    ax[1].imshow(lowres_image.detach().numpy())
+    ax[1].plot(idx1, idx2, 'x', color="red")
+    ax[2].plot(V,target_func)
+    ax[2].set_title('Current target function')
+    #plt.show()
+    st.pyplot(fig3, clear_figure ="True")
     
     # Once target loop is defined (unless are loops are selected bad by user), we compute the obj
     for i in range(0, num):
