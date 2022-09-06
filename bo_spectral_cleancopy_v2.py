@@ -303,7 +303,7 @@ def generate_targetobj(X, spec_norm, lowres_image, V, vote, wcount_good, target_
 # Normalize all data. It is very important to fit GP model with normalized data to avoid issues such as
 # - decrease of GP performance due to largely spaced real-valued data X.
 def normalize_get_initialdata_KL(X, fix_params, num, m):
-    
+    st.markdown("Test")
     X_feas = torch.empty((X.shape[1]**X.shape[0], X.shape[0]))
     k=0
     spec_norm, lowres_image, V  = fix_params[0], fix_params[1], fix_params[2]
