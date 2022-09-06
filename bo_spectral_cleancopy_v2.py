@@ -203,10 +203,10 @@ def generate_targetobj(X, spec_norm, lowres_image, V, m):
       st.session_state.target_func = torch.zeros(spec_norm.shape[2])
     
     st.session_state.m1, st.session_state.m2,  st.session_state.m3 = m[0], m[1], m[2]
-    ind = st.session_state.ind
+    ind = 1
     #st.write(st.session_state)
     if st.button("Next image", key="next"):
-        
+        ind = st.session_state.ind
         ind= ind + 1
         #st.write(ind)
         st.session_state.ind = ind
