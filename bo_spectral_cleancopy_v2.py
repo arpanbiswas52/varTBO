@@ -305,7 +305,9 @@ def generate_targetobj(X, spec_norm, lowres_image, V, m):
     #target_func =0
     if st.button("Next image", key="next"):
         if (i < X.shape[0]):
-            st.session_state.ind = st.session_state.ind + 1
+            ind = st.session_state.ind
+            ind= ind + 1
+            st.session_state.ind = ind
             st.session_state.m1 = st.session_state.m1 + 1
             st.session_state.m2 = st.session_state.m2 + 1
             st.session_state.m3 = st.session_state.m3 + 1
