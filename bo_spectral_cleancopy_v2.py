@@ -188,15 +188,27 @@ def func_obj(X, spec_norm, V, wcount_good, target_func, vote):
     return obj
 
 ##@title generate/update target loop
-def generate_targetobj(X, spec_norm, lowres_image, V, vote, wcount_good, target_func, m1, m2, m3, i):
+def generate_targetobj(X, spec_norm, lowres_image, V, m):
     #count_good= 0
-    
+    if "ind" not in st.session_state:
+      st.session_state.ind = 0
 
-    idx1 = int(X[i, 0])
-    idx2 = int(X[i, 1])
+    if "vote" not in st.session_state:
+      st.session_state.vote = torch.empty((X.shape[0], 1))
+
+    if "wcount_good" not in st.session_state:
+      st.session_state.wcount_good = 0
+
+    if "target_func" not in st.session_state:
+      st.session_state.target_func = torch.zeros(spec_norm.shape[2])
+    
+    st.session_state.m1, st.session_state.m2,  st.session_state.m3 = m[0], m[1], m[2]
+
+    idx1 = int(X[st.session_state.ind, 0])
+    idx2 = int(X[st.session_state.ind, 1])
     #print(idx1, idx2)
     #target_loop = torch.empty(loop_norm.shape[2])
-    if (wcount_good == 0):
+    if (st.session_state.wcount_good == 0):
     # Figure for user choice
         fig1,ax=plt.subplots(ncols=2,figsize=(12,4))
         ax[0].plot(V,spec_norm[idx1, idx2, :])
@@ -227,74 +239,74 @@ def generate_targetobj(X, spec_norm, lowres_image, V, vote, wcount_good, target_
     #vote = st.sidebar.number_input('Rate', min_value=0, max_value=2, value=1, key= number)
     #count = count + 1
     options = ["Bad", "Good", "Very Good"]
-    Rate = st.radio('Rate', options, key= m1)
+    Rate = st.radio('Rate', options, key= st.session_state.m1)
    
     if Rate == "Bad":
-        vote[i,0] = 0
-        wcount_good = wcount_good + vote[i,0]
+        st.session_state.vote[st.session_state.ind,0] = 0
+        st.session_state.wcount_good = st.session_state.wcount_good + st.session_state.vote[st.session_state.ind,0]
         st.write('Vote given for current spectral', Rate)
         #st.write(st.session_state.key)
     
     elif Rate == "Good":
-        vote[i,0] = 1
+        st.session_state.vote[st.session_state.ind,0] = 1
         #wcount_good = wcount_good + vote
         st.write('Vote given for current spectral', Rate)
         newspec_wt = 1
-        if ((wcount_good) > 0): #Only if we already have selected good spectral in early iterations
+        if ((st.session_state.wcount_good) > 0): #Only if we already have selected good spectral in early iterations
             st.markdown('Do you want to update preference to new spectral over prioir mean target (Y/N)?')
-            newspec_pref = st.radio("Select",('Yes', 'No'), index=1, key=m2)
+            newspec_pref = st.radio("Select",('Yes', 'No'), index=1, key=st.session_state.m2)
             st.write('You selected', newspec_pref)
             #newspec_pref = str(input("Do you want to update preference to new spectral over prioir mean target (Y/N): "))
             if (newspec_pref == 'Yes'):
                 st.markdown('Provide weights between 0 and 1: 1 being all the weights to new spectral as new target')
-                newspec_wt = st.number_input('Weight', min_value=0.0, max_value=1.0, value =1.0, step =0.1, key= m3)
+                newspec_wt = st.number_input('Weight', min_value=0.0, max_value=1.0, value =1.0, step =0.1, key= st.session_state.m3)
                 st.write('You choose weight for new spectral:', newspec_wt)
                 #print("Provide weights between 0 and 1: 1 being all the weights to new spectral as new target")
                 #newspec_wt = float(input("enter weightage: "))
             else:
                 newspec_wt = 0.5
                 st.write('Default weight for new spectral: 0.5')
-        wcount_good =wcount_good + vote[i,0]
-        target_func = (((1-newspec_wt)*target_func*(wcount_good-vote[i,0]))\
-                       + (newspec_wt*vote[i,0]*spec_norm[idx1, idx2, :]))/(((wcount_good-vote[i,0])*(1-newspec_wt))\
-                       + (vote[i,0]*newspec_wt))
+        st.session_state.wcount_good = st.session_state.wcount_good + st.session_state.vote[st.session_state.ind,0]
+        st.session_state.target_func = (((1-newspec_wt)*st.session_state.target_func*(st.session_state.wcount_good-st.session_state.vote[i,0]))\
+                       + (newspec_wt*st.session_state.vote[i,0]*spec_norm[idx1, idx2, :]))/(((st.session_state.wcount_good-st.session_state.vote[i,0])*(1-newspec_wt))\
+                       + (st.session_state.vote[i,0]*newspec_wt))
         #st.write(st.session_state.key)
         
     else:
-        vote[i,0] = 2
+        st.session_state.vote[st.session_state.ind,0] = 2
         #wcount_good = wcount_good + vote
         st.write('Vote given for current spectral', Rate)
         newspec_wt = 1
-        if ((wcount_good) > 0): #Only if we already have selected good spectral in early iterations
+        if ((st.session_state.wcount_good) > 0): #Only if we already have selected good spectral in early iterations
             st.markdown('Do you want to update preference to new spectral over prioir mean target (Y/N)?')
-            newspec_pref = st.radio("Select",('Yes', 'No'), index =1, key=m2)
+            newspec_pref = st.radio("Select",('Yes', 'No'), index=1, key=st.session_state.m2)
             st.write('You selected', newspec_pref)
             #newspec_pref = str(input("Do you want to update preference to new spectral over prioir mean target (Y/N): "))
             if (newspec_pref == 'Yes'):
                 st.markdown('Provide weights between 0 and 1: 1 being all the weights to new spectral as new target')
-                newspec_wt = st.number_input('Weight', min_value=0.0, max_value=1.0, value = 1.0, step =0.1, key= m3)
+                newspec_wt = st.number_input('Weight', min_value=0.0, max_value=1.0, value =1.0, step =0.1, key= st.session_state.m3)
                 st.write('You choose weight for new spectral:', newspec_wt)
                 #print("Provide weights between 0 and 1: 1 being all the weights to new spectral as new target")
                 #newspec_wt = float(input("enter weightage: "))
             else:
                 newspec_wt = 0.5
                 st.write('Default weight for new spectral: 0.5')
-        wcount_good =wcount_good + vote[i,0]
-        target_func = (((1-newspec_wt)*target_func*(wcount_good-vote[i,0]))\
-                       + (newspec_wt*vote[i,0]*spec_norm[idx1, idx2, :]))/(((wcount_good-vote[i,0])*(1-newspec_wt))\
-                       + (vote[i,0]*newspec_wt))
+        st.session_state.wcount_good = st.session_state.wcount_good + st.session_state.vote[st.session_state.ind,0]
+        st.session_state.target_func = (((1-newspec_wt)*st.session_state.target_func*(st.session_state.wcount_good-st.session_state.vote[i,0]))\
+                       + (newspec_wt*st.session_state.vote[i,0]*spec_norm[idx1, idx2, :]))/(((st.session_state.wcount_good-st.session_state.vote[i,0])*(1-newspec_wt))\
+                       + (st.session_state.vote[i,0]*newspec_wt))
         #st.write(st.session_state.key)
         
-        #st.write(st.session_state.key)
+        st.write(st.session_state)
 
     
     #target_func =0
     if st.button("Next image", key="next"):
         if (i < X.shape[0]):
-            i = i + 1
+            st.session_state.ind = st.session_state.ind + 1
             st.experimental_rerun()
         else:
-            st.markdown("Initial evaluation complete. Start BO")
+            st.markdown("Initial evaluation complete.")
             
     return vote, wcount_good, target_func  
 
@@ -303,11 +315,10 @@ def generate_targetobj(X, spec_norm, lowres_image, V, vote, wcount_good, target_
 # Normalize all data. It is very important to fit GP model with normalized data to avoid issues such as
 # - decrease of GP performance due to largely spaced real-valued data X.
 def normalize_get_initialdata_KL(X, fix_params, num, m):
-    st.markdown("Test")
+    
     X_feas = torch.empty((X.shape[1]**X.shape[0], X.shape[0]))
     k=0
     spec_norm, lowres_image, V  = fix_params[0], fix_params[1], fix_params[2]
-    m1, m2, m3  = m[0], m[1], m[2]
     
     
     for t1 in range(0, X.shape[1]):
@@ -320,7 +331,7 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
     #train_X = torch.empty((len(X), num))
     #train_X_norm = torch.empty((len(X), num))
     train_Y = torch.empty((num, 1))
-    pref = torch.empty((num, 1))
+    
    
 
     # Normalize X
@@ -340,10 +351,10 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
     #Evaluate initial training data
     x = torch.empty((1,2))
     # First generate target loop, based on initial training data
-    wcount_good= 0
-    count=2
+    #wcount_good= 0
+    
     target_func = torch.zeros(spec_norm.shape[2])
-    pref, wcount_good, target_func = generate_targetobj(train_X, spec_norm, lowres_image, V, pref, wcount_good, target_func, m1, m2, m3, count)
+    pref, wcount_good, target_func = generate_targetobj(train_X, spec_norm, lowres_image, V, m)
                
     #else:
     
@@ -371,7 +382,7 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
     #print(pref)
     #print(train_Y)
     var_params = [wcount_good, pref, target_func]
-    m = [m1, m2, m3]
+    m = [st.session_state.m1, st.session_state.m2, st.session_state.m3]
     st.write(train_X, train_X_norm, train_Y, m)
     
     return X_feas, X_feas_norm, train_X, train_X_norm, train_Y, var_params, idx, m
@@ -567,10 +578,16 @@ def plot_iteration_results(train_X, train_Y, test_X, y_pred_means, y_pred_vars, 
 #BO framework integration
 def BO_vartarget(X, fix_params, num_start, N):
     num = num_start
-    m1 = 0
-    m2 = 1000
-    m3 = 100000
-    m = [m1, m2, m3]
+    if "m1" not in st.session_state:
+      st.session_state.m1 = 0
+
+    if "m2" not in st.session_state:
+      st.session_state.m2 = 1000
+
+    if "m3" not in st.session_state:
+      st.session_state.m3 = 100000
+    
+    m = [st.session_state.m1, st.session_state.m2, st.session_state.m3]
     # Initialization: evaluate few initial data normalize data
     test_X, test_X_norm, train_X, train_X_norm, train_Y, var_params, idx, m = \
         normalize_get_initialdata_KL(X, fix_params, num, m)
