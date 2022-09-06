@@ -203,6 +203,8 @@ def generate_targetobj(X, spec_norm, lowres_image, V, m):
       st.session_state.target_func = torch.zeros(spec_norm.shape[2])
     
     st.session_state.m1, st.session_state.m2,  st.session_state.m3 = m[0], m[1], m[2]
+    
+    st.write(st.session_state)
 
     idx1 = int(X[st.session_state.ind, 0])
     idx2 = int(X[st.session_state.ind, 1])
@@ -297,7 +299,7 @@ def generate_targetobj(X, spec_norm, lowres_image, V, m):
                        + (st.session_state.vote[i,0]*newspec_wt))
         #st.write(st.session_state.key)
         
-        st.write(st.session_state)
+       
 
     
     #target_func =0
