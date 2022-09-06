@@ -359,7 +359,7 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
         m2 = m2 + 1
         m3 = m3 + 1
         #i = i + 1
-        st.experimental_rerun()
+        #st.experimental_rerun()
             
     #else:
     st.markdown("Initial evaluation complete. Start BO")
