@@ -115,15 +115,15 @@ def detail_info():
 
 def interactive_BO(df):
     st.sidebar.markdown('## Initialization')
-    with st.sidebar.form("Initialization"):
+    with st.form("Initialization"):
         
         num_start = st.sidebar.slider('Starting Samples', 2, 10, 5)
         N = st.sidebar.slider('Total BO samples', 10, 200, 30)
 
         # Every form must have a submit button.
-        submitted = st.form_submit_button("Start Analysis")
+        submitted = st.sidebar.form_submit_button("Start Analysis")
         if submitted:
-            st.write("starting samples:", num_start, "total BO iterations", N)
+            st.sidebar.write("starting samples:", num_start, "total BO iterations", N)
             #Get data
             loop_mat = df[0]
             dc_vec = df[1]
