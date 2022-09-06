@@ -188,12 +188,12 @@ def func_obj(X, spec_norm, V, wcount_good, target_func, vote):
     return obj
 
 ##@title generate/update target loop
-def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, m1, m2, m3):
+def generate_targetobj(X, spec_norm, lowres_image, V, vote, wcount_good, target_func, m1, m2, m3, i):
     #count_good= 0
     
 
-    idx1 = int(X[0, 0])
-    idx2 = int(X[0, 1])
+    idx1 = int(X[i, 0])
+    idx2 = int(X[i, 1])
     #print(idx1, idx2)
     #target_loop = torch.empty(loop_norm.shape[2])
     if (wcount_good == 0):
@@ -230,13 +230,13 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, 
     Rate = st.radio('Rate', options, key= m1)
    
     if Rate == "Bad":
-        vote = 0
-        wcount_good = wcount_good + vote
+        vote[i,0] = 0
+        wcount_good = wcount_good + vote[i,0]
         st.write('Vote given for current spectral', Rate)
         #st.write(st.session_state.key)
     
     elif Rate == "Good":
-        vote = 1
+        vote[i,0] = 1
         #wcount_good = wcount_good + vote
         st.write('Vote given for current spectral', Rate)
         newspec_wt = 1
@@ -254,14 +254,14 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, 
             else:
                 newspec_wt = 0.5
                 st.write('Default weight for new spectral: 0.5')
-        wcount_good =wcount_good + vote
-        target_func = (((1-newspec_wt)*target_func*(wcount_good-vote))\
-                       + (newspec_wt*vote*spec_norm[idx1, idx2, :]))/(((wcount_good-vote)*(1-newspec_wt))\
-                       + (vote*newspec_wt))
+        wcount_good =wcount_good + vote[i,0]
+        target_func = (((1-newspec_wt)*target_func*(wcount_good-vote[i,0]))\
+                       + (newspec_wt*vote[i,0]*spec_norm[idx1, idx2, :]))/(((wcount_good-vote[i,0])*(1-newspec_wt))\
+                       + (vote[i,0]*newspec_wt))
         #st.write(st.session_state.key)
         
     else:
-        vote = 2
+        vote[i,0] = 2
         #wcount_good = wcount_good + vote
         st.write('Vote given for current spectral', Rate)
         newspec_wt = 1
@@ -279,16 +279,23 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, 
             else:
                 newspec_wt = 0.5
                 st.write('Default weight for new spectral: 0.5')
-        wcount_good =wcount_good + vote
-        target_func = (((1-newspec_wt)*target_func*(wcount_good-vote))\
-                       + (newspec_wt*vote*spec_norm[idx1, idx2, :]))/(((wcount_good-vote)*(1-newspec_wt))\
-                       + (vote*newspec_wt))
+        wcount_good =wcount_good + vote[i,0]
+        target_func = (((1-newspec_wt)*target_func*(wcount_good-vote[i,0]))\
+                       + (newspec_wt*vote[i,0]*spec_norm[idx1, idx2, :]))/(((wcount_good-vote[i,0])*(1-newspec_wt))\
+                       + (vote[i,0]*newspec_wt))
         #st.write(st.session_state.key)
         
         #st.write(st.session_state.key)
 
     
     #target_func =0
+    if st.button("Next image", key="next"):
+        if (i < X.shape[0]):
+            i = i + 1
+            st.experimental_rerun()
+        else:
+            st.markdown("Initial evaluation complete. Start BO")
+            
     return vote, wcount_good, target_func  
 
 
@@ -296,6 +303,80 @@ def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, 
 # Normalize all data. It is very important to fit GP model with normalized data to avoid issues such as
 # - decrease of GP performance due to largely spaced real-valued data X.
 def normalize_get_initialdata_KL(X, fix_params, num, m):
+    
+    X_feas = torch.empty((X.shape[1]**X.shape[0], X.shape[0]))
+    k=0
+    spec_norm, lowres_image, V  = fix_params[0], fix_params[1], fix_params[2]
+    m1, m2, m3  = m[0], m[1], m[2]
+    
+    
+    for t1 in range(0, X.shape[1]):
+        for t2 in range(0, X.shape[1]):
+            X_feas[k, 0] = X[0, t1]
+            X_feas[k, 1] = X[1, t2]
+            k=k+1
+    
+    X_feas_norm = torch.empty((X_feas.shape[0], X_feas.shape[1]))
+    #train_X = torch.empty((len(X), num))
+    #train_X_norm = torch.empty((len(X), num))
+    train_Y = torch.empty((num, 1))
+    pref = torch.empty((num, 1))
+   
+
+    # Normalize X
+    for i in range(0, X_feas.shape[1]):
+        X_feas_norm[:, i] = (X_feas[:, i] - torch.min(X_feas[:, i])) / (torch.max(X_feas[:, i]) - torch.min(X_feas[:, i]))
+      
+    
+
+    # Select starting samples randomly as training data
+    np.random.seed(0)
+    idx = np.random.randint(0, len(X_feas), num)
+    train_X = X_feas[idx]
+    train_X_norm = X_feas_norm[idx]
+    #print(train_X)
+    #print(train_X_norm)
+
+    #Evaluate initial training data
+    x = torch.empty((1,2))
+    # First generate target loop, based on initial training data
+    wcount_good= 0
+    count=0
+    target_func = torch.zeros(spec_norm.shape[2])
+    pref, wcount_good, target_func = generate_targetobj(train_X, spec_norm, lowres_image, V, pref, wcount_good, target_func, m1, m2, m3, count)
+               
+    #else:
+    
+    idx1 = int(x[0, 0])
+    idx2 = int(x[0, 1])
+    fig3,ax=plt.subplots(ncols=3,figsize=(12,4))
+    ax[0].plot(V,spec_norm[idx1, idx2, :])
+    ax[0].set_title('loc:' +str(idx1) +"," + str(idx2))
+    ax[1].imshow(lowres_image.detach().numpy())
+    ax[1].plot(idx1, idx2, 'x', color="red")
+    ax[2].plot(V,target_func)
+    ax[2].set_title('Current target function')
+    #plt.show()
+    st.pyplot(fig3, clear_figure ="True")
+    
+    # Once target loop is defined (unless are loops are selected bad by user), we compute the obj
+    for i in range(0, num):
+        x[0, 0] = train_X[i, 0]
+        x[0, 1] = train_X[i, 1]
+
+        #print("Function eval #" + str(m + 1))
+
+        train_Y[i, 0] = func_obj(x, spec_norm, V, wcount_good, target_func, pref[i, 0])
+        #m = m + 1
+    #print(pref)
+    #print(train_Y)
+    var_params = [wcount_good, pref, target_func]
+    m = [m1, m2, m3]
+    st.write(train_X, train_X_norm, train_Y, m)
+    
+    return X_feas, X_feas_norm, train_X, train_X_norm, train_Y, var_params, idx, m
+
+def normalize_get_initialdata_KL2(X, fix_params, num, m):
     
     X_feas = torch.empty((X.shape[1]**X.shape[0], X.shape[0]))
     k=0
