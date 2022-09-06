@@ -362,7 +362,7 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
     # First generate target loop, based on initial training data
     #wcount_good= 0
     
-    target_func = torch.zeros(spec_norm.shape[2])
+    #target_func = torch.zeros(spec_norm.shape[2])
     pref, wcount_good, target_func, m = generate_targetobj(train_X, spec_norm, lowres_image, V, m)
                
     #else:
@@ -381,13 +381,13 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
     
     # Once target loop is defined (unless are loops are selected bad by user), we compute the obj
     st.markdown("Test func eval")
-    for i in range(0, num):
-        x[0, 0] = train_X[i, 0]
-        x[0, 1] = train_X[i, 1]
+    #for i in range(0, num):
+    #   x[0, 0] = train_X[i, 0]
+    #    x[0, 1] = train_X[i, 1]
 
         #print("Function eval #" + str(m + 1))
 
-        train_Y[i, 0] = func_obj(x, spec_norm, V, wcount_good, target_func, pref[i, 0])
+    #    train_Y[i, 0] = func_obj(x, spec_norm, V, wcount_good, target_func, pref[i, 0])
         #m = m + 1
     #print(pref)
     #print(train_Y)
