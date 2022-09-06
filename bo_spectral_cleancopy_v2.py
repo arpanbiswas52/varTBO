@@ -194,7 +194,7 @@ def generate_targetobj(X, spec_norm, lowres_image, V, m):
       st.session_state.ind = 0
 
     if "vote" not in st.session_state:
-      st.session_state.vote = torch.empty((X.shape[0], 1))
+      st.session_state.vote = torch.zeros((X.shape[0], 1))
 
     if "wcount_good" not in st.session_state:
       st.session_state.wcount_good = 0
@@ -227,7 +227,7 @@ def generate_targetobj(X, spec_norm, lowres_image, V, m):
         ax[0].set_title('loc:' +str(idx1) +"," + str(idx2))
         ax[1].imshow(lowres_image.detach().numpy())
         ax[1].plot(idx1, idx2, 'x', color="red")
-        ax[2].plot(V,target_func)
+        ax[2].plot(V,st.session_state.target_func)
         ax[2].set_title('Current target function')
         #plt.show()
         st.pyplot(fig2, clear_figure ="True")
