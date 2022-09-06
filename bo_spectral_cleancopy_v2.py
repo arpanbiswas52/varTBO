@@ -204,7 +204,7 @@ def generate_targetobj(X, spec_norm, lowres_image, V, m):
     
     st.session_state.m1, st.session_state.m2,  st.session_state.m3 = m[0], m[1], m[2]
     
-    st.write(st.session_state)
+    #st.write(st.session_state)
 
     idx1 = int(X[st.session_state.ind, 0])
     idx2 = int(X[st.session_state.ind, 1])
@@ -301,13 +301,14 @@ def generate_targetobj(X, spec_norm, lowres_image, V, m):
         
        
 
-    st.write(st.session_state)
+    
     #target_func =0
     if st.button("Next image", key="next"):
         ind = st.session_state.ind
         if (ind < X.shape[0]):
             
             ind= ind + 1
+            st.write(ind)
             st.session_state.ind = ind
             st.session_state.m1 = st.session_state.m1 + 1
             st.session_state.m2 = st.session_state.m2 + 1
@@ -318,6 +319,7 @@ def generate_targetobj(X, spec_norm, lowres_image, V, m):
             st.session_state.m2 = st.session_state.m2 + 1
             st.session_state.m3 = st.session_state.m3 + 1
             st.markdown("Initial evaluation complete.")
+            st.write(st.session_state)
     
     m = [st.session_state.m1, st.session_state.m2, st.session_state.m3]
     return st.session_state.vote, st.session_state.wcount_good, st.session_state.target_func, m  
