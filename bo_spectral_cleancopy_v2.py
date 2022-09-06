@@ -346,7 +346,7 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
     #count=0
     target_func = torch.zeros(spec_norm.shape[2])
     i = 0
-    if st.button("Next spectral", key="next")
+    if st.button("Next spectral", key="next"):
     #for i in range(0, num):
         if (i<num):
             x[0, 0] = train_X[i, 0]
