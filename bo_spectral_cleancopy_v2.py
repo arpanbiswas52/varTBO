@@ -121,7 +121,7 @@ def interactive_BO(df):
         N = st.sidebar.slider('Total BO samples', 10, 200, 30)
 
         # Every form must have a submit button.
-        submitted = st.sidebar.form_submit_button("Start Analysis")
+        submitted = st.form_submit_button("Start Analysis")
         if submitted:
             st.sidebar.write("starting samples:", num_start, "total BO iterations", N)
             #Get data
