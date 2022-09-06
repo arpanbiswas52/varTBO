@@ -114,9 +114,17 @@ def detail_info():
     st.button('Back to analysis') 
 
 def interactive_BO(df):
-    st.sidebar.markdown('## Initialization')
-    num_start = st.sidebar.slider('Starting Samples', 2, 30, 5)
-    N = st.sidebar.slider('Total BO samples', 10, 200, 30)
+    #st.sidebar.markdown('## Initialization')
+    with st.sidebar.form("Initialization"):
+        
+        num_start = st.sidebar.slider('Starting Samples', 2, 10, 5)
+        N = st.sidebar.slider('Total BO samples', 10, 200, 30)
+
+        # Every form must have a submit button.
+        submitted = st.form_submit_button("Start Analysis")
+        if submitted:
+            st.sidebar.write("starting samples:", num_start, "total BO iterations", N)
+
 
     #Get data
     loop_mat = df[0]
@@ -193,6 +201,7 @@ def func_obj(X, spec_norm, V, wcount_good, target_func, vote):
 ##@title generate/update target loop
 def generate_targetobj(X, spec_norm, lowres_image, V, wcount_good, target_func, m1, m2, m3):
     #count_good= 0
+    
 
     idx1 = int(X[0, 0])
     idx2 = int(X[0, 1])
