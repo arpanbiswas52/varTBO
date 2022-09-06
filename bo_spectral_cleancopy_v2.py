@@ -269,9 +269,9 @@ def generate_targetobj(X, spec_norm, lowres_image, V, m):
                 newspec_wt = 0.5
                 st.write('Default weight for new spectral: 0.5')
         st.session_state.wcount_good = st.session_state.wcount_good + st.session_state.vote[st.session_state.ind,0]
-        st.session_state.target_func = (((1-newspec_wt)*st.session_state.target_func*(st.session_state.wcount_good-st.session_state.vote[i,0]))\
-                       + (newspec_wt*st.session_state.vote[i,0]*spec_norm[idx1, idx2, :]))/(((st.session_state.wcount_good-st.session_state.vote[i,0])*(1-newspec_wt))\
-                       + (st.session_state.vote[i,0]*newspec_wt))
+        st.session_state.target_func = (((1-newspec_wt)*st.session_state.target_func*(st.session_state.wcount_good-st.session_state.vote[st.session_state.ind,0]))\
+                       + (newspec_wt*st.session_state.vote[st.session_state.ind,0]*spec_norm[idx1, idx2, :]))/(((st.session_state.wcount_good-st.session_state.vote[st.session_state.ind,0])*(1-newspec_wt))\
+                       + (st.session_state.vote[st.session_state.ind,0]*newspec_wt))
         #st.write(st.session_state.key)
         
     else:
@@ -294,23 +294,30 @@ def generate_targetobj(X, spec_norm, lowres_image, V, m):
                 newspec_wt = 0.5
                 st.write('Default weight for new spectral: 0.5')
         st.session_state.wcount_good = st.session_state.wcount_good + st.session_state.vote[st.session_state.ind,0]
-        st.session_state.target_func = (((1-newspec_wt)*st.session_state.target_func*(st.session_state.wcount_good-st.session_state.vote[i,0]))\
-                       + (newspec_wt*st.session_state.vote[i,0]*spec_norm[idx1, idx2, :]))/(((st.session_state.wcount_good-st.session_state.vote[i,0])*(1-newspec_wt))\
-                       + (st.session_state.vote[i,0]*newspec_wt))
+        st.session_state.target_func = (((1-newspec_wt)*st.session_state.target_func*(st.session_state.wcount_good-st.session_state.vote[st.session_state.ind,0]))\
+                       + (newspec_wt*st.session_state.vote[st.session_state.ind,0]*spec_norm[idx1, idx2, :]))/(((st.session_state.wcount_good-st.session_state.vote[st.session_state.ind,0])*(1-newspec_wt))\
+                       + (st.session_state.vote[st.session_state.ind,0]*newspec_wt))
         #st.write(st.session_state.key)
         
        
 
-    
+    st.write(st.session_state)
     #target_func =0
     if st.button("Next image", key="next"):
         if (i < X.shape[0]):
             st.session_state.ind = st.session_state.ind + 1
+            st.session_state.m1 = st.session_state.m1 + 1
+            st.session_state.m2 = st.session_state.m2 + 1
+            st.session_state.m3 = st.session_state.m3 + 1
             st.experimental_rerun()
         else:
+            st.session_state.m1 = st.session_state.m1 + 1
+            st.session_state.m2 = st.session_state.m2 + 1
+            st.session_state.m3 = st.session_state.m3 + 1
             st.markdown("Initial evaluation complete.")
-            
-    return vote, wcount_good, target_func  
+    
+    m = [st.session_state.m1, st.session_state.m2, st.session_state.m3]
+    return vote, wcount_good, target_func, m  
 
 
 
@@ -356,7 +363,7 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
     #wcount_good= 0
     
     target_func = torch.zeros(spec_norm.shape[2])
-    pref, wcount_good, target_func = generate_targetobj(train_X, spec_norm, lowres_image, V, m)
+    pref, wcount_good, target_func, m = generate_targetobj(train_X, spec_norm, lowres_image, V, m)
                
     #else:
     
@@ -384,7 +391,7 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
     #print(pref)
     #print(train_Y)
     var_params = [wcount_good, pref, target_func]
-    m = [st.session_state.m1, st.session_state.m2, st.session_state.m3]
+    #m = [st.session_state.m1, st.session_state.m2, st.session_state.m3]
     st.write(train_X, train_X_norm, train_Y, m)
     
     return X_feas, X_feas_norm, train_X, train_X_norm, train_Y, var_params, idx, m
