@@ -160,7 +160,7 @@ def interactive_BO(df):
 
     #Fixed parameters of VAE model
     fix_params = [loop_norm, bepfm_lowres_image, V]
-    X_opt, X_opt_GP, var_params, explored_locs, final_GP_estim = BO_vartarget(X, fix_params, num_start, N)      
+    BO_vartarget(X, fix_params, num_start, N)      
         
 
 #@title
