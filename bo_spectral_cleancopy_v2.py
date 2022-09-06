@@ -205,107 +205,107 @@ def generate_targetobj(X, spec_norm, lowres_image, V, m):
     st.session_state.m1, st.session_state.m2,  st.session_state.m3 = m[0], m[1], m[2]
     
     #st.write(st.session_state)
-
-    idx1 = int(X[st.session_state.ind, 0])
-    idx2 = int(X[st.session_state.ind, 1])
-    #print(idx1, idx2)
-    #target_loop = torch.empty(loop_norm.shape[2])
-    if (st.session_state.wcount_good == 0):
-    # Figure for user choice
-        fig1,ax=plt.subplots(ncols=2,figsize=(12,4))
-        ax[0].plot(V,spec_norm[idx1, idx2, :])
-        ax[0].set_title('loc:' +str(idx1) +"," + str(idx2))
-        ax[1].imshow(lowres_image.detach().numpy())
-        ax[1].plot(idx1, idx2, 'x', color="red")
-        #plt.show()
-        st.pyplot(fig1, clear_figure ="True")
-
-    else:
-    # Figure for user choice
-        fig2,ax=plt.subplots(ncols=3,figsize=(12,4))
-        ax[0].plot(V,spec_norm[idx1, idx2, :])
-        ax[0].set_title('loc:' +str(idx1) +"," + str(idx2))
-        ax[1].imshow(lowres_image.detach().numpy())
-        ax[1].plot(idx1, idx2, 'x', color="red")
-        ax[2].plot(V,st.session_state.target_func)
-        ax[2].set_title('Current target function')
-        #plt.show()
-        st.pyplot(fig2, clear_figure ="True")
-
-
-    st.markdown('Rating: 0-Bad, 1-Good, 2-Very good')
-    #"st.session_state object:", st.session_state
-    #if 'r' not in st.session_state:
-    #    st.session_state['r'] = 0
-    #vote = st.sidebar.slider('Rate', 0, 2, 0)
-    #vote = st.sidebar.number_input('Rate', min_value=0, max_value=2, value=1, key= number)
-    #count = count + 1
-    options = ["Bad", "Good", "Very Good"]
-    Rate = st.radio('Rate', options, key= st.session_state.m1)
-   
-    if Rate == "Bad":
-        st.session_state.vote[st.session_state.ind,0] = 0
-        st.session_state.wcount_good = st.session_state.wcount_good + st.session_state.vote[st.session_state.ind,0]
-        st.write('Vote given for current spectral', Rate)
-        #st.write(st.session_state.key)
-    
-    elif Rate == "Good":
-        st.session_state.vote[st.session_state.ind,0] = 1
-        #wcount_good = wcount_good + vote
-        st.write('Vote given for current spectral', Rate)
-        newspec_wt = 1
-        if ((st.session_state.wcount_good) > 0): #Only if we already have selected good spectral in early iterations
-            st.markdown('Do you want to update preference to new spectral over prioir mean target (Y/N)?')
-            newspec_pref = st.radio("Select",('Yes', 'No'), index=1, key=st.session_state.m2)
-            st.write('You selected', newspec_pref)
-            #newspec_pref = str(input("Do you want to update preference to new spectral over prioir mean target (Y/N): "))
-            if (newspec_pref == 'Yes'):
-                st.markdown('Provide weights between 0 and 1: 1 being all the weights to new spectral as new target')
-                newspec_wt = st.number_input('Weight', min_value=0.0, max_value=1.0, value =1.0, step =0.1, key= st.session_state.m3)
-                st.write('You choose weight for new spectral:', newspec_wt)
-                #print("Provide weights between 0 and 1: 1 being all the weights to new spectral as new target")
-                #newspec_wt = float(input("enter weightage: "))
-            else:
-                newspec_wt = 0.5
-                st.write('Default weight for new spectral: 0.5')
-        st.session_state.wcount_good = st.session_state.wcount_good + st.session_state.vote[st.session_state.ind,0]
-        st.session_state.target_func = (((1-newspec_wt)*st.session_state.target_func*(st.session_state.wcount_good-st.session_state.vote[st.session_state.ind,0]))\
-                       + (newspec_wt*st.session_state.vote[st.session_state.ind,0]*spec_norm[idx1, idx2, :]))/(((st.session_state.wcount_good-st.session_state.vote[st.session_state.ind,0])*(1-newspec_wt))\
-                       + (st.session_state.vote[st.session_state.ind,0]*newspec_wt))
-        #st.write(st.session_state.key)
-        
-    else:
-        st.session_state.vote[st.session_state.ind,0] = 2
-        #wcount_good = wcount_good + vote
-        st.write('Vote given for current spectral', Rate)
-        newspec_wt = 1
-        if ((st.session_state.wcount_good) > 0): #Only if we already have selected good spectral in early iterations
-            st.markdown('Do you want to update preference to new spectral over prioir mean target (Y/N)?')
-            newspec_pref = st.radio("Select",('Yes', 'No'), index=1, key=st.session_state.m2)
-            st.write('You selected', newspec_pref)
-            #newspec_pref = str(input("Do you want to update preference to new spectral over prioir mean target (Y/N): "))
-            if (newspec_pref == 'Yes'):
-                st.markdown('Provide weights between 0 and 1: 1 being all the weights to new spectral as new target')
-                newspec_wt = st.number_input('Weight', min_value=0.0, max_value=1.0, value =1.0, step =0.1, key= st.session_state.m3)
-                st.write('You choose weight for new spectral:', newspec_wt)
-                #print("Provide weights between 0 and 1: 1 being all the weights to new spectral as new target")
-                #newspec_wt = float(input("enter weightage: "))
-            else:
-                newspec_wt = 0.5
-                st.write('Default weight for new spectral: 0.5')
-        st.session_state.wcount_good = st.session_state.wcount_good + st.session_state.vote[st.session_state.ind,0]
-        st.session_state.target_func = (((1-newspec_wt)*st.session_state.target_func*(st.session_state.wcount_good-st.session_state.vote[st.session_state.ind,0]))\
-                       + (newspec_wt*st.session_state.vote[st.session_state.ind,0]*spec_norm[idx1, idx2, :]))/(((st.session_state.wcount_good-st.session_state.vote[st.session_state.ind,0])*(1-newspec_wt))\
-                       + (st.session_state.vote[st.session_state.ind,0]*newspec_wt))
-        #st.write(st.session_state.key)
-        
-       
-
-    
-    #target_func =0
     if st.button("Next image", key="next"):
         ind = st.session_state.ind
         if (ind < X.shape[0]):
+            idx1 = int(X[st.session_state.ind, 0])
+            idx2 = int(X[st.session_state.ind, 1])
+            #print(idx1, idx2)
+            #target_loop = torch.empty(loop_norm.shape[2])
+            if (st.session_state.wcount_good == 0):
+            # Figure for user choice
+                fig1,ax=plt.subplots(ncols=2,figsize=(12,4))
+                ax[0].plot(V,spec_norm[idx1, idx2, :])
+                ax[0].set_title('loc:' +str(idx1) +"," + str(idx2))
+                ax[1].imshow(lowres_image.detach().numpy())
+                ax[1].plot(idx1, idx2, 'x', color="red")
+                #plt.show()
+                st.pyplot(fig1, clear_figure ="True")
+
+            else:
+            # Figure for user choice
+                fig2,ax=plt.subplots(ncols=3,figsize=(12,4))
+                ax[0].plot(V,spec_norm[idx1, idx2, :])
+                ax[0].set_title('loc:' +str(idx1) +"," + str(idx2))
+                ax[1].imshow(lowres_image.detach().numpy())
+                ax[1].plot(idx1, idx2, 'x', color="red")
+                ax[2].plot(V,st.session_state.target_func)
+                ax[2].set_title('Current target function')
+                #plt.show()
+                st.pyplot(fig2, clear_figure ="True")
+
+
+            st.markdown('Rating: 0-Bad, 1-Good, 2-Very good')
+            #"st.session_state object:", st.session_state
+            #if 'r' not in st.session_state:
+            #    st.session_state['r'] = 0
+            #vote = st.sidebar.slider('Rate', 0, 2, 0)
+            #vote = st.sidebar.number_input('Rate', min_value=0, max_value=2, value=1, key= number)
+            #count = count + 1
+            options = ["Bad", "Good", "Very Good"]
+            Rate = st.radio('Rate', options, key= st.session_state.m1)
+
+            if Rate == "Bad":
+                st.session_state.vote[st.session_state.ind,0] = 0
+                st.session_state.wcount_good = st.session_state.wcount_good + st.session_state.vote[st.session_state.ind,0]
+                st.write('Vote given for current spectral', Rate)
+                #st.write(st.session_state.key)
+
+            elif Rate == "Good":
+                st.session_state.vote[st.session_state.ind,0] = 1
+                #wcount_good = wcount_good + vote
+                st.write('Vote given for current spectral', Rate)
+                newspec_wt = 1
+                if ((st.session_state.wcount_good) > 0): #Only if we already have selected good spectral in early iterations
+                    st.markdown('Do you want to update preference to new spectral over prioir mean target (Y/N)?')
+                    newspec_pref = st.radio("Select",('Yes', 'No'), index=1, key=st.session_state.m2)
+                    st.write('You selected', newspec_pref)
+                    #newspec_pref = str(input("Do you want to update preference to new spectral over prioir mean target (Y/N): "))
+                    if (newspec_pref == 'Yes'):
+                        st.markdown('Provide weights between 0 and 1: 1 being all the weights to new spectral as new target')
+                        newspec_wt = st.number_input('Weight', min_value=0.0, max_value=1.0, value =1.0, step =0.1, key= st.session_state.m3)
+                        st.write('You choose weight for new spectral:', newspec_wt)
+                        #print("Provide weights between 0 and 1: 1 being all the weights to new spectral as new target")
+                        #newspec_wt = float(input("enter weightage: "))
+                    else:
+                        newspec_wt = 0.5
+                        st.write('Default weight for new spectral: 0.5')
+                st.session_state.wcount_good = st.session_state.wcount_good + st.session_state.vote[st.session_state.ind,0]
+                st.session_state.target_func = (((1-newspec_wt)*st.session_state.target_func*(st.session_state.wcount_good-st.session_state.vote[st.session_state.ind,0]))\
+                               + (newspec_wt*st.session_state.vote[st.session_state.ind,0]*spec_norm[idx1, idx2, :]))/(((st.session_state.wcount_good-st.session_state.vote[st.session_state.ind,0])*(1-newspec_wt))\
+                               + (st.session_state.vote[st.session_state.ind,0]*newspec_wt))
+                #st.write(st.session_state.key)
+
+            else:
+                st.session_state.vote[st.session_state.ind,0] = 2
+                #wcount_good = wcount_good + vote
+                st.write('Vote given for current spectral', Rate)
+                newspec_wt = 1
+                if ((st.session_state.wcount_good) > 0): #Only if we already have selected good spectral in early iterations
+                    st.markdown('Do you want to update preference to new spectral over prioir mean target (Y/N)?')
+                    newspec_pref = st.radio("Select",('Yes', 'No'), index=1, key=st.session_state.m2)
+                    st.write('You selected', newspec_pref)
+                    #newspec_pref = str(input("Do you want to update preference to new spectral over prioir mean target (Y/N): "))
+                    if (newspec_pref == 'Yes'):
+                        st.markdown('Provide weights between 0 and 1: 1 being all the weights to new spectral as new target')
+                        newspec_wt = st.number_input('Weight', min_value=0.0, max_value=1.0, value =1.0, step =0.1, key= st.session_state.m3)
+                        st.write('You choose weight for new spectral:', newspec_wt)
+                        #print("Provide weights between 0 and 1: 1 being all the weights to new spectral as new target")
+                        #newspec_wt = float(input("enter weightage: "))
+                    else:
+                        newspec_wt = 0.5
+                        st.write('Default weight for new spectral: 0.5')
+                st.session_state.wcount_good = st.session_state.wcount_good + st.session_state.vote[st.session_state.ind,0]
+                st.session_state.target_func = (((1-newspec_wt)*st.session_state.target_func*(st.session_state.wcount_good-st.session_state.vote[st.session_state.ind,0]))\
+                               + (newspec_wt*st.session_state.vote[st.session_state.ind,0]*spec_norm[idx1, idx2, :]))/(((st.session_state.wcount_good-st.session_state.vote[st.session_state.ind,0])*(1-newspec_wt))\
+                               + (st.session_state.vote[st.session_state.ind,0]*newspec_wt))
+                #st.write(st.session_state.key)
+
+
+
+
+            #target_func =0
+
             
             ind= ind + 1
             st.write(ind)
