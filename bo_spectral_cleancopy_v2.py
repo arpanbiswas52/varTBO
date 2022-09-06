@@ -317,7 +317,7 @@ def generate_targetobj(X, spec_norm, lowres_image, V, m):
             st.markdown("Initial evaluation complete.")
     
     m = [st.session_state.m1, st.session_state.m2, st.session_state.m3]
-    return vote, wcount_good, target_func, m  
+    return st.session_state.vote, st.session_state.wcount_good, st.session_state.target_func, m  
 
 
 
@@ -380,6 +380,7 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
     #st.pyplot(fig3, clear_figure ="True")
     
     # Once target loop is defined (unless are loops are selected bad by user), we compute the obj
+    st.markdown("Test func eval")
     for i in range(0, num):
         x[0, 0] = train_X[i, 0]
         x[0, 1] = train_X[i, 1]
