@@ -341,7 +341,7 @@ def normalize_get_initialdata_KL(X, fix_params, num, m):
     x = torch.empty((1,2))
     # First generate target loop, based on initial training data
     wcount_good= 0
-    count=0
+    count=2
     target_func = torch.zeros(spec_norm.shape[2])
     pref, wcount_good, target_func = generate_targetobj(train_X, spec_norm, lowres_image, V, pref, wcount_good, target_func, m1, m2, m3, count)
                
