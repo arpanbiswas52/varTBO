@@ -5,6 +5,9 @@ The Bayesian Optimization (BO) framework is build in $torch$, using $Botorch$.
 
 Run <b>VarTBO_nb.ipynb</b> to play : https://github.com/arpanbiswas52/varTBO/blob/main/varTBO_nb.ipynb 
 
+Version of the modified BO spectral recommendation system to connect with microscope: https://github.com/arpanbiswas52/varTBO/blob/main/varTBO_microscopeversion_nb.ipynb
+
+
 Brief Problem Description
 
 - Here we have a image data, where X is the input location of the image
