@@ -19,6 +19,7 @@ https://github.com/arpanbiswas52/varTBO/blob/main/BO(image_patch)_(Notebookversi
   
 <b> dKLBOSRS with dKLGP (deep learning kernel GP) and high-dim image patch as input X</b> (in numpy)
 https://github.com/arpanbiswas52/varTBO/blob/main/dKLBO_spectral_(Notebookversion).ipynb
+
 <b>Note*</b> the deep learning kernel (dKL) function in this architecture is developed by Maxim Ziatdinov (in AtomAI Python library). Details on dkL model can be found here https://atomai.readthedocs.io/en/latest/atomai_models.html#atomai.models.dklGPR
 
 
