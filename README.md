@@ -1,5 +1,5 @@
 # physics-driven, human-augmented, dynamic, Bayesian optimized spectral recommendation system
-
+<b>MLExchange Project funded by Berkeley Lab, award number 107514</b>
 
 Brief Problem Description
 
