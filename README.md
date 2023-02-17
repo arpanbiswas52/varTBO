@@ -23,6 +23,7 @@ https://github.com/arpanbiswas52/varTBO/blob/main/dKLBO_spectral_MicroscopyVersi
 
 <b>Note*</b> the deep learning kernel (dKL) function in this architecture is developed by Maxim Ziatdinov (in AtomAI Python library). Details on dkL model can be found here https://atomai.readthedocs.io/en/latest/atomai_models.html#atomai.models.dklGPR
 
+**Please feel free to use these notebooks for your research, however, please cite the github link**
 
 <i> Please let me know if you have questions, find any bugs, issues, or want another option/feature added at either biswasar@ornl.gov, arpanbiswas52@gmail.com.
 
