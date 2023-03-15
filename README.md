@@ -1,13 +1,15 @@
-# physics-driven, human-augmented, dynamic, Bayesian optimized spectral recommendation system
+# human-augmented Bayesian optimized spectral recommendation system: A "human-in-the-loop Automated Experiment framework"
 <b>MLExchange Project funded by Berkeley Lab, award number 107514</b>
 
-Brief Problem Description
+
+<i> **Brief Problem Description** </i>
+![image](https://user-images.githubusercontent.com/19354142/225442105-9e040b14-fa3d-43de-b359-ae5e6c9601b9.png)
 
 - Here we have a image data, where X is the input location of the image
 
 - Each location in the image, we have a spectral data, from where user select if the data is good/bad. We define target spectral from user votes and feature preference on good sampled spectral
 
-- The goal is to build a optimization (BO) model where we adaptively learn the target features/properties of the material sample and simultaneously the respective user desired (target) spectral phase map.
+- The goal is to build a optimization (BO) model where we adaptively learn the target features/properties of the material sample and simultaneously maximize the structural sim of spectral to the target at the current state of BO process.
 
 Different architectures of <b>BO spectral recommendation system</b>: 
   
